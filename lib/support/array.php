@@ -17,6 +17,8 @@
  */
 
 /**
+ * This package provide support methods for dealing with arrays
+ *
  * @package Support
  * @subpackage array
  */
