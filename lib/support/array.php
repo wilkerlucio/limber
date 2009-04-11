@@ -104,12 +104,18 @@ function array_group_by($array, $grouper)
  * 	{
  * 		return $this->n * $x;
  * 	}
+ * 	
+ * 	public function __invoke()
+ * 	{
+ * 		return $this->multiply(10);
+ * 	}
  * }
  *
  * $data = array(new A(1), new A(2), new A(3));
  * 
  * print_r(array_invoke($data, "multiply"));
  * print_r(array_invoke($data, "multiply", 5));
+ * print_r(array_invoke($data));
  * </code>
  *
  * This example will output:
@@ -127,19 +133,26 @@ function array_group_by($array, $grouper)
  *     [1] => 10
  *     [2] => 15
  * )
+ * Array
+ * (
+ *     [0] => 10
+ *     [1] => 20
+ *     [2] => 30
+ * )
  * </code>
  *
  * @param array $array given array
- * @param string $method the method name to be executed
+ * @param string $method the method name to be executed, if you don't give the
+ * method (or pass as null) the object itself will be invoked
  * @param mixed $args,... arguments of method
  * @return array the array with the return value of method called
  */
-function array_invoke($array, $method)
+function array_invoke($array, $method = null)
 {
 	$args = array_slice(func_get_args(), 2);
 	
 	return array_map(function($item) use ($method, $args) {
-		return call_user_func_array(array($item, $method), $args);
+		return call_user_func_array($method ? array($item, $method) : $item, $args);
 	}, $array);
 }
 
@@ -183,6 +196,8 @@ function array_invoke($array, $method)
 function array_pluck($array, $attribute)
 {
 	return array_map(function($item) use ($attribute) {
+		if (!is_object($item) || !isset($item->$attribute)) return null;
+		
 		return $item->$attribute;
 	}, $array);
 }
