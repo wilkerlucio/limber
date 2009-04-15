@@ -56,7 +56,7 @@ describe("String support", function($spec) {
 					$spec(str_pluralize_br("funeral"))->should->be("funerais");
 				});
 				
-				$spec->it("should change end 'l' to 'is' and acentuate when string end's with 'el' or 'ul'", function($spec, $data) {
+				$spec->it("should change end 'l' to 'is' and acentuate when string end's with 'el' or 'ol'", function($spec, $data) {
 					$spec(str_pluralize_br("pastel"))->should->be("pastéis");
 					$spec(str_pluralize_br("farol"))->should->be("faróis");
 				});
