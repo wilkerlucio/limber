@@ -20,8 +20,14 @@ require_once dirname(__FILE__) . "/../../lib/support/string.php";
 
 describe("String support", function($spec) {
 	$spec->context("dealing with accents", function($spec) {
-		$spec->it("should acute a vogal", function($spec, $data) {
-			$spec(str_acute("e Eo"))->should->be("é Éó");
+		$spec->context("acuting vogals", function($spec) {
+			$spec->it("should acute a vogal", function($spec, $data) {
+				$spec(str_acute("e Eo"))->should->be("é Éó");
+			});
+			
+			$spec->it("should keep previous acuted vogals", function($spec, $data) {
+				$spec(str_acute("éo"))->should->be("éó");
+			});
 		});
 		
 		$spec->it("should replace the characteres with accents to without accents ones", function($spec, $data) {

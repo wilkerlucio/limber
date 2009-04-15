@@ -29,7 +29,7 @@ function str_acute($string)
 	$normal = "aeiouAEIOU";
 	$acuted = "áéíóúÁÉÍÓÚ";
 	
-	return utf8_encode(strtr($string, $normal, utf8_decode($acuted)));
+	return utf8_encode(strtr(utf8_decode($string), $normal, utf8_decode($acuted)));
 }
 
 /**
