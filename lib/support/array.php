@@ -201,3 +201,41 @@ function array_pluck($array, $attribute)
 		return $item->$attribute;
 	}, $array);
 }
+
+/**
+ * Append items from one array to another
+ *
+ * This method behaviour like array_push, but instead of add one item this
+ * method accepts one array, and push all elements of this array into original
+ * one
+ *
+ * <code>
+ * $data = array("a", 1, "c");
+ * array_append($data, array("e", 2));
+ * 
+ * print_r($data);
+ * </code>
+ *
+ * This example will output:
+ *
+ * <code>
+ * Array
+ * (
+ *     [0] => a
+ *     [1] => 1
+ *     [2] => c
+ *     [3] => e
+ *     [4] => 2
+ * )
+ * </code>
+ *
+ * @param array $array array to receive data
+ * @param array $data array containing data to be added
+ * @return void
+ */
+function array_append(&$array, $data)
+{
+	foreach ($data as $value) {
+		$array[] = $value;
+	}
+}

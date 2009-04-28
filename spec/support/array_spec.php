@@ -93,4 +93,13 @@ describe("Array Support", function($spec) {
 			$spec($attributes)->should->be(array(2, null, null, null, 3, null));
 		});
 	});
+	
+	$spec->context("appending items at end of array", function($spec) {
+		$spec->it("should append all items of one array into another", function($spec, $data) {
+			$data = array("a", 1, "c");
+			array_append($data, array("e", 2));
+			
+			$spec($data)->should->be(array("a", 1, "c", "e", 2));
+		});
+	});
 });
