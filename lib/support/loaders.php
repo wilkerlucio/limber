@@ -23,6 +23,13 @@
 
 /**
  * Require a complete directory
+ *
+ * This method scans one directory and require all php files (with require_once)
+ * found
+ *
+ * @param string $path base path to scan
+ * @param boolean $recursive if true, the scan will be recursive (following directories)
+ * @return void
  */
 function require_dir($path, $recursive = true)
 {
@@ -42,6 +49,39 @@ function require_dir($path, $recursive = true)
 	}
 }
 
+/**
+ * Generate one autoloader for a given path
+ *
+ * This method generates one autoloader function, this function will try to
+ * autoload a class based one her name, where the default package will be
+ * the main directory, and subpackages will be separated by a underscore (_).
+ *
+ * Example: given the following directory tree (the parentesis represents the class name)
+ *
+ * my_lib
+ * |-- Class1.php (Class1)
+ * |-- Package
+ *     |-- Class2.php (Package_Class2)
+ *     |-- MorePackage
+ *         |-- Class3.php (Package_MorePackage_Class3)
+ *     |-- Class4.php (Package_Class4)
+ *
+ * According to exemple above, you can do something like this:
+ *
+ * <code>
+ * path_autoloader("my_lib");
+ *
+ * //all classes above will be autoloaded
+ * $c1 = new Class1();
+ * $c2 = new Package_Class2();
+ * $c3 = new Package_MorePackage_Class3();
+ * $c4 = new Package_Class4();
+ * </code>
+ *
+ * @param string $path base path of classes
+ * @param boolean $autoregister if true, the function will be automatic added to auto_register queue
+ * @return function generated autoloader function
+ */
 function path_autoloader($path, $autoregister = true)
 {
 	$path = rtrim($path, "/");
