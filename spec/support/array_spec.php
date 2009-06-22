@@ -16,7 +16,7 @@
  * limitations under the License. 
  */
 
-require_once dirname(__FILE__) . "/../../lib/support/array.php";
+require_once dirname(__FILE__) . "/../../lib/limber_support/array.php";
 
 class A
 {
