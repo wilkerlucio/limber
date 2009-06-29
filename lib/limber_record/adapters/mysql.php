@@ -37,6 +37,11 @@ class Mysql extends Base
 		return @mysql_select_db($database, $this->id);
 	}
 	
+	protected function _close()
+	{
+		return @mysql_close($this->id);
+	}
+	
 	//common methods
 	protected function _execute($sql)
 	{
@@ -57,6 +62,8 @@ class Mysql extends Base
 		while ($row = @mysql_fetch_assoc($query)) {
 			$data[] = $row;
 		}
+		
+		@mysql_free_result($query);
 		
 		return $data;
 	}
@@ -86,6 +93,9 @@ class Mysql extends Base
 	{
 		$query = $this->_execute($sql);
 		
-		return @mysql_result($query, 0, 0);
+		$result = @mysql_result($query, 0, 0);
+		@mysql_free_result($query);
+		
+		return $result;
 	}
 }
