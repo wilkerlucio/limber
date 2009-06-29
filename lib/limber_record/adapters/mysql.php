@@ -75,6 +75,12 @@ class Mysql extends Base
 		return @mysql_affected_rows($this->id);
 	}
 	
+	protected function _create_table($table_name, $fields_description) {}
+	protected function _drop_table($table_name) {}
+	protected function _transaction_begin() {}
+	protected function _transaction_commit() {}
+	protected function _transaction_rollback() {}
+	
 	//improve performance for select cell
 	public function select_cell($sql)
 	{
