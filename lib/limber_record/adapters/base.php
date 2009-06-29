@@ -180,7 +180,7 @@ abstract class Base
 	{
 		$this->force_connection();
 		
-		return $this->_update();
+		return $this->_update($sql);
 	}
 	
 	//connection methods
