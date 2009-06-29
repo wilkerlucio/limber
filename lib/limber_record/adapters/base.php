@@ -47,6 +47,16 @@ abstract class Base
 	private $connected;
 	
 	//delay connection methods
+	/**
+	 * Connect to database
+	 *
+	 * Internally, this method only set the connection parameters, the real
+	 * connection will be made when its nescessary
+	 *
+	 * @param string $host host to connect
+	 * @param string $user uset to connect
+	 * @param string $password password to connect
+	 */
 	public function connect($host, $user, $password)
 	{
 		$this->host = $host;
@@ -54,6 +64,15 @@ abstract class Base
 		$this->password = $password;
 	}
 	
+	/**
+	 * Select database
+	 *
+	 * This method internally sets the database to select when the connection
+	 * is made, if the connection is already started this method will do the
+	 * database selection immediatly
+	 *
+	 * @param string $database database name
+	 */
 	public function select_db($database)
 	{
 		$this->database = $database;
@@ -62,6 +81,21 @@ abstract class Base
 			if(!$this->_select_db($database)) {
 				throw new DatabaseSelectException("Unable to select database $database");
 			}
+		}
+	}
+	
+	/**
+	 * Closes current connection
+	 *
+	 * If the connection is alive this methods will close the connection,
+	 * otherwise this method will do nothing
+	 */
+	public function close()
+	{
+		if ($this->connected) {
+			$this->_close();
+			
+			$this->connected = false;
 		}
 	}
 	
@@ -177,6 +211,13 @@ abstract class Base
 	 * @return boolean
 	 */
 	protected abstract function _select_db($database);
+	
+	/**
+	 * Closes current connection
+	 *
+	 * This methods closes current connection with database
+	 */
+	protected abstract function _close();
 	
 	//scheme methods
 	protected abstract function _create_table($table_name, $fields_description);
