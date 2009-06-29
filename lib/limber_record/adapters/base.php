@@ -342,6 +342,14 @@ abstract class Base
 	protected abstract function _transaction_rollback();
 	
 	//quoting
+	/**
+	 * Quote data
+	 *
+	 * This method provides a easy to way to quote data, preventing SQL injections
+	 *
+	 * @param mixed $value value to be quoted
+	 * @return string quoted result
+	 */
 	public function quote($value)
 	{
 		if (is_array($value)) {
@@ -372,6 +380,16 @@ abstract class Base
 	public function quote_string($string)
 	{
 		return "'" . str_replace(array("\\", "'"), array("\\\\", "\\'"), $string) . "'";
+	}
+	
+	public function quote_column_name($column_name)
+	{
+		return $column_name;
+	}
+	
+	public function quote_table_name($table_name)
+	{
+		return $this->quote_column_name($table_name);
 	}
 }
 
