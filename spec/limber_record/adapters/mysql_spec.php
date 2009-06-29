@@ -117,5 +117,21 @@ describe("Mysql Adapter", function($spec) {
 			
 			$spec($data->adapter->select_cell("SELECT count(*) FROM `cars`"))->should->be($initial);
 		});
+		
+		$spec->it("should quote strings", function($spec, $data) {
+			$spec($data->adapter->quote_string('name\'s'))->should->be("'name\\'s'");
+		});
+		
+		$spec->it("should quote column names", function($spec, $data) {
+			$spec($data->adapter->quote_column_name('name'))->should->be('`name`');
+		});
+		
+		$spec->it("should quote table names", function($spec, $data) {
+			$spec($data->adapter->quote_table_name('mytable'))->should->be('`mytable`');
+		});
+		
+		$spec->it("should quote table names with column", function($spec, $data) {
+			$spec($data->adapter->quote_table_name('mytable.column'))->should->be('`mytable`.`column`');
+		});
 	});
 });

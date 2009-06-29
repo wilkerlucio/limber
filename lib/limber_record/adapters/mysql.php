@@ -126,4 +126,20 @@ class Mysql extends Base
 		
 		return $result;
 	}
+	
+	//quoting
+	public function quote_string($string)
+	{
+		return "'" . mysql_real_escape_string($string, $this->id) . "'";
+	}
+	
+	public function quote_column_name($column_name)
+	{
+		return "`$column_name`";
+	}
+	
+	public function quote_table_name($table_name)
+	{
+		return str_replace(".", "`.`", $this->quote_column_name($table_name));
+	}
 }
