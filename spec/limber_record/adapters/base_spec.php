@@ -61,6 +61,25 @@ describe("Base adapter", function($spec) {
 			$spec($data->adapter->db_selected)->should->be(false);
 		});
 	});
+	
+	$spec->context("selecting records", function($spec) {
+		$spec->before_all(function($data) {
+			$data->adapter = new MockAdapter();
+			$data->adapter->connect("localhost", "root", "password");
+		});
+		
+		$spec->it("should return the full array into select method", function($spec, $data) {
+			$spec(count($data->adapter->select("")))->should->be(3);
+		});
+		
+		$spec->it("should return only first row with select row method", function($spec, $data) {
+			$spec($data->adapter->select_row(""))->should->be(array("name" => "John", "email" => "john@limbercode.com"));
+		});
+		
+		$spec->it("should return only first cell with select cell method", function($spec, $data) {
+			$spec($data->adapter->select_cell(""))->should->be("John");
+		});
+	});
 });
 
 class MockAdapter extends Base
@@ -95,8 +114,16 @@ class MockAdapter extends Base
 	protected function _close() {}
 	protected function _create_table($table_name, $fields_description) {}
 	protected function _drop_table($table_name) {}
+	protected function _describe_table($table_name) {}
 	protected function _execute($sql) {}
-	protected function _select($sql) {}
+	protected function _select($sql)
+	{
+		return array(
+			array("name" => "John", "email" => "john@limbercode.com"),
+			array("name" => "Mary", "email" => "mary@limbercode.com"),
+			array("name" => "Ana",  "email" => "ana@limbercode.com"),
+		);
+	}
 	protected function _insert($sql) {}
 	protected function _update($sql) {}
 	protected function _transaction_begin() {}
