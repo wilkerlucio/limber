@@ -86,6 +86,11 @@ abstract class Base
 	}
 	
 	//selection methods
+	/**
+	 * Wraps internal select method
+	 *
+	 * @see _select
+	 */
 	public function select($sql)
 	{
 		$this->force_connection();
@@ -93,6 +98,12 @@ abstract class Base
 		return $this->_select($sql);
 	}
 	
+	/**
+	 * Do a select and return first row
+	 *
+	 * @param string $sql sql statement
+	 * @return array associative array with given data
+	 */
 	public function select_row($sql)
 	{
 		$this->force_connection();
@@ -102,6 +113,12 @@ abstract class Base
 		return reset($data);
 	}
 	
+	/**
+	 * Do a select_row and return first item
+	 *
+	 * @param string $sql sql statement
+	 * @return string cell data
+	 */
 	public function select_cell($sql)
 	{
 		$data = $this->select_row($sql);
@@ -110,6 +127,11 @@ abstract class Base
 	}
 	
 	//update methods
+	/**
+	 * Wraps internal _insert method
+	 *
+	 * @see _insert
+	 */
 	public function insert($sql)
 	{
 		$this->force_connection();
@@ -117,6 +139,11 @@ abstract class Base
 		return $this->_insert($sql);
 	}
 	
+	/**
+	 * Wraps internal _update method
+	 *
+	 * @see _update
+	 */
 	public function update($sql)
 	{
 		$this->force_connection();
