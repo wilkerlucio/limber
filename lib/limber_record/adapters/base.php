@@ -340,6 +340,39 @@ abstract class Base
 	 * Rollback the current transaction
 	 */
 	protected abstract function _transaction_rollback();
+	
+	//quoting
+	public function quote($value)
+	{
+		if (is_array($value)) {
+			return implode(",", array_map(array($this, 'quote'), $value));
+		} elseif ($value === null) {
+			return 'NULL';
+		} elseif ($value === true) {
+			return $this->quote_true();
+		} elseif ($value === false) {
+			return $this->quote_false();
+		} elseif (is_numeric($value)) {
+			return "$value";
+		} else {
+			return $this->quote_string($value);
+		}
+	}
+	
+	public function quote_true()
+	{
+		return '1';
+	}
+	
+	public function quote_false()
+	{
+		return '0';
+	}
+	
+	public function quote_string($string)
+	{
+		return "'" . str_replace(array("\\", "'"), array("\\\\", "\\'"), $string) . "'";
+	}
 }
 
 /**

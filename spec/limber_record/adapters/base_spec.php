@@ -80,6 +80,44 @@ describe("Base adapter", function($spec) {
 			$spec($data->adapter->select_cell(""))->should->be("John");
 		});
 	});
+	
+	$spec->context("quoting values", function($spec) {
+		$spec->before_all(function($data) {
+			$data->adapter = new MockAdapter();
+		});
+		
+		$spec->it("should quote null values", function($spec, $data) {
+			$spec($data->adapter->quote(null))->should->be("NULL");
+		});
+		
+		$spec->it("should quote true values", function($spec, $data) {
+			$spec($data->adapter->quote(true))->should->be("1");
+		});
+		
+		$spec->it("should quote false values", function($spec, $data) {
+			$spec($data->adapter->quote(false))->should->be("0");
+		});
+		
+		$spec->it("should quote integer values", function($spec, $data) {
+			$spec($data->adapter->quote(20))->should->be("20");
+		});
+		
+		$spec->it("should quote double values", function($spec, $data) {
+			$spec($data->adapter->quote(10.5))->should->be("10.5");
+		});
+		
+		$spec->it("should quote string values", function($spec, $data) {
+			$spec($data->adapter->quote("some string"))->should->be("'some string'");
+		});
+		
+		$spec->it("should quote string values replacing injection characteres", function($spec, $data) {
+			$spec($data->adapter->quote("some ' OR 1 = 1"))->should->be("'some \\' OR 1 = 1'");
+		});
+		
+		$spec->it("should quote array values", function($spec, $data) {
+			$spec($data->adapter->quote(array("multi", 5, null, "items")))->should->be("'multi',5,NULL,'items'");
+		});
+	});
 });
 
 class MockAdapter extends Base
