@@ -22,6 +22,21 @@ require_once dirname(__FILE__) . '/base.php';
 
 class Mysql extends Base
 {
+	private static $NATIVE_TYPES = array(
+		"primary_key" => "int(11) DEFAULT NULL auto_increment PRIMARY KEY",
+		"string"      => array("name" => "varchar", "limit" => 255),
+		"text"        => array("name" => "text"),
+		"integer"     => array("name" => "int", "limit" => 4),
+		"float"       => array("name" => "float"),
+		"decimal"     => array("name" => "decimal"),
+		"datetime"    => array("name" => "datetime"),
+		"timestamp"   => array("name" => "datetime"),
+		"time"        => array("name" => "time"),
+		"date"        => array("name" => "date"),
+		"binary"      => array("name" => "blob"),
+		"boolean"     => array("name" => "tinyint", "limit" => 1)
+	);
+	
 	private $id;
 	
 	//connection methods
@@ -72,7 +87,7 @@ class Mysql extends Base
 	{
 		$this->_execute($sql);
 		
-		return @mysql_insert_id($this->id);
+		return (string) @mysql_insert_id($this->id);
 	}
 	
 	protected function _update($sql)
@@ -84,9 +99,22 @@ class Mysql extends Base
 	
 	protected function _create_table($table_name, $fields_description) {}
 	protected function _drop_table($table_name) {}
-	protected function _transaction_begin() {}
-	protected function _transaction_commit() {}
-	protected function _transaction_rollback() {}
+	protected function _describe_table($table_name) {}
+	
+	protected function _transaction_begin()
+	{
+		$this->_execute("BEGIN");
+	}
+	
+	protected function _transaction_commit()
+	{
+		$this->_execute("COMMIT");
+	}
+	
+	protected function _transaction_rollback()
+	{
+		$this->_execute("ROLLBACK");
+	}
 	
 	//improve performance for select cell
 	public function select_cell($sql)
