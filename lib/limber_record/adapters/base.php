@@ -106,9 +106,7 @@ abstract class Base
 	 */
 	public function select_row($sql)
 	{
-		$this->force_connection();
-		
-		$data = $this->_select($sql);
+		$data = $this->select($sql);
 		
 		return reset($data);
 	}
@@ -168,6 +166,16 @@ abstract class Base
 	 * @return boolean
 	 */
 	protected abstract function _connect($host, $user, $password);
+	
+	/**
+	 * Select database
+	 *
+	 * This method does the internal database selection, like the connection this
+	 * method is also delayed to be executed only when a query is needed.
+	 *
+	 * @param string $database database name
+	 * @return boolean
+	 */
 	protected abstract function _select_db($database);
 	
 	//scheme methods
