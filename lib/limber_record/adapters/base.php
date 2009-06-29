@@ -183,6 +183,42 @@ abstract class Base
 		return $this->_update($sql);
 	}
 	
+	/**
+	 * Wraps internal _transaction_begin method
+	 *
+	 * @see _transaction_begin
+	 */
+	public function transaction_begin()
+	{
+		$this->force_connection();
+		
+		return $this->_transaction_begin();
+	}
+	
+	/**
+	 * Wraps internal _transaction_begin method
+	 *
+	 * @see _transaction_commit
+	 */
+	public function transaction_commit()
+	{
+		$this->force_connection();
+		
+		return $this->_transaction_commit();
+	}
+	
+	/**
+	 * Wraps internal _transaction_begin method
+	 *
+	 * @see _transaction_rollback
+	 */
+	public function transaction_rollback()
+	{
+		$this->force_connection();
+		
+		return $this->_transaction_rollback();
+	}
+	
 	//connection methods
 	/**
 	 * Connect to database
@@ -222,6 +258,7 @@ abstract class Base
 	//scheme methods
 	protected abstract function _create_table($table_name, $fields_description);
 	protected abstract function _drop_table($table_name);
+	protected abstract function _describe_table($table_name);
 	
 	//common methods
 	/**
@@ -289,8 +326,19 @@ abstract class Base
 	protected abstract function _update($sql);
 	
 	//transaction methods
+	/**
+	 * Starts a new database transaction
+	 */
 	protected abstract function _transaction_begin();
+	
+	/**
+	 * Commit the current transaction
+	 */
 	protected abstract function _transaction_commit();
+	
+	/**
+	 * Rollback the current transaction
+	 */
 	protected abstract function _transaction_rollback();
 }
 
