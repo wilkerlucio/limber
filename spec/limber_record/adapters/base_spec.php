@@ -21,6 +21,17 @@ namespace LimberRecord\Adapters;
 require_once dirname(__FILE__) . "/../../../lib/limber_record/adapters/base.php";
 
 describe("Base adapter", function($spec) {
+	$spec->it("should throw exception if try to connect with invalid data", function($spec) {
+		try {
+			$adapter = new MockAdapter();
+			$adapter->connect("localhost", "root", "wrong");
+			$adapter->force_connection();
+			$spec(true)->should->be(false);
+		} catch (ConnectionException $ex) {
+			$spec(true)->should->be(true);
+		}
+	});
+	
 	$spec->context("delaying connection", function($spec) {
 		$spec->before_each(function($data) {
 			$data->adapter = new MockAdapter();
@@ -65,9 +76,13 @@ class MockAdapter extends Base
 	
 	protected function _connect($host, $user, $password)
 	{
-		$this->is_connected = true;
-		
-		return true;
+		if ($host == "localhost" && $user == "root" && $password == "password") {
+			$this->is_connected = true;
+			
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	protected function _select_db($database)
