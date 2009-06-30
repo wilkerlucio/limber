@@ -1,3 +1,3 @@
 <?php
 
-require_once dirname(__FILE__) . "/limber_record/manager.php";
+require_once __DIR__ . "/limber_record/manager.php";

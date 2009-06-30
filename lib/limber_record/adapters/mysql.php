@@ -18,7 +18,7 @@
 
 namespace LimberRecord\Adapters;
 
-require_once dirname(__FILE__) . '/base.php';
+require_once __DIR__ . '/base.php';
 
 class Mysql extends Base
 {

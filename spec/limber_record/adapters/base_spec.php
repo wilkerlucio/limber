@@ -18,7 +18,7 @@
 
 namespace LimberRecord\Adapters;
 
-require_once dirname(__FILE__) . "/../../../lib/limber_record/adapters/base.php";
+require_once __DIR__ . "/../../../lib/limber_record/adapters/base.php";
 
 describe("Base adapter", function($spec) {
 	$spec->it("should throw exception if try to connect with invalid data", function($spec) {

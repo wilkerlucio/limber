@@ -18,11 +18,11 @@
 
 namespace LimberRecord\Adapters;
 
-require_once dirname(__FILE__) . "/../../../lib/limber_record/adapters/mysql.php";
+require_once __DIR__ . "/../../../lib/limber_record/adapters/mysql.php";
 
 describe("Mysql Adapter", function($spec) {
 	$spec->before_all(function($data) {
-		include dirname(__FILE__) . "/mysql_setup.php"; //setup database
+		include __DIR__ . "/mysql_setup.php"; //setup database
 	});
 	
 	$spec->it("should connect to database", function($spec) {
