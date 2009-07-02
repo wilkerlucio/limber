@@ -18,7 +18,7 @@
 
 namespace LimberRecord;
 
-require_once __DIR__ . "/../../lib/limber_record.php";
+require_once "limber_record.php";
 
 describe("connection manager", function($spec) {
 	$spec->context("getting adapter", function($spec) {

@@ -31,7 +31,7 @@ class Manager
 		$this->connections = array();
 		
 		$this->adapters_path = array();
-		$this->adapters_path[] = __DIR__ . "/adapters";
+		$this->adapters_path[] = "limber_record/adapters";
 	}
 	
 	/**

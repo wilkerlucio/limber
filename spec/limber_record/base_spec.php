@@ -16,7 +16,7 @@
  * limitations under the License. 
  */
 
-require_once __DIR__ . "/../../base.php";
+require_once "limber_record/base.php";
 
 describe("LimberRecord Base", function($spec) {
 	$spec->context("getting table name", function($spec) {
