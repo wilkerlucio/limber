@@ -20,5 +20,5 @@ namespace LimberRecord;
 
 class Base
 {
-	
+	public static function table_name($table_name = false) {}
 }

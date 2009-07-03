@@ -16,4 +16,9 @@
  * limitations under the License. 
  */
 
+//load limber support dependency
+require_once "limber_support.php";
+
+//load library
+require_once "limber_record/base.php";
 require_once "limber_record/manager.php";

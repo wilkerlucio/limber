@@ -16,7 +16,10 @@
  * limitations under the License. 
  */
 
-require_once "limber_record/base.php";
+require_once "limber_record.php";
+
+//require models
+require_dir(__DIR__ . "/models");
 
 describe("LimberRecord Base", function($spec) {
 	$spec->context("getting table name", function($spec) {
