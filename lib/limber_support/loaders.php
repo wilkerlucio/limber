@@ -35,7 +35,7 @@ require_once dirname(__FILE__) . "/string.php";
  */
 function require_dir($path, $recursive = true)
 {
-	$path = rtrim($path, "/");
+	$path = rtrim($path, "\\/");
 	$dir = opendir($path);
 	
 	while ($file = readdir($dir)) {
@@ -86,7 +86,7 @@ function require_dir($path, $recursive = true)
  */
 function path_autoloader($path, $autoregister = true)
 {
-	$path = rtrim($path, "/");
+	$path = rtrim($path, "\\/");
 	
 	$fn = function($classname) use ($path) {
 		$classpath = explode('_', $classname);
