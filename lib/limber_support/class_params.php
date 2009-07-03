@@ -46,8 +46,8 @@
  * 
  * ChildTwo::set_static_data("from second");
  * 
- * echo ChildTwo::get_static_data(); //outputs: second value
- * echo ChildOne::get_static_data(); //outputs: second value
+ * echo ChildTwo::get_static_data(); //outputs: from second
+ * echo ChildOne::get_static_data(); //outputs: from second
  * </code>
  *
  * Like you saw, the static data is shared between child classes
@@ -79,7 +79,7 @@
  * 
  * ChildTwo::set_static_data("from second");
  * 
- * echo ChildTwo::get_static_data(); //outputs: second value
+ * echo ChildTwo::get_static_data(); //outputs: from second
  * echo ChildOne::get_static_data(); //outputs: first value
  * </code>
  *
