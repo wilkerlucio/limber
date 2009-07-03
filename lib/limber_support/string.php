@@ -79,3 +79,17 @@ function str_underscore($string)
 	
 	return strtolower($string);
 }
+
+/**
+ * Check if a string is empty
+ *
+ * An string is considered empty if there is no content or the content contains
+ * only spaces and tabs
+ *
+ * @param string $string the input string
+ * @return boolean
+ */
+function str_is_empty($string)
+{
+	return !trim($string);
+}

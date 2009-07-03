@@ -62,4 +62,18 @@ describe("String support", function($spec) {
 			$spec(str_underscore("CamelCasedString"))->should->be("camel_cased_string");
 		});
 	});
+	
+	$spec->context("testing if a string is empty", function($spec) {
+		$spec->it("should return true for empty string", function($spec) {
+			$spec(str_is_empty(""))->should->be(true);
+		});
+		
+		$spec->it("should return true for string containing only tabs and spaces", function($spec) {
+			$spec(str_is_empty("  \t"))->should->be(true);
+		});
+		
+		$spec->it("should return false for strings with content", function($spec) {
+			$spec(str_is_empty(" some content"))->should->be(false);
+		});
+	});
 });
