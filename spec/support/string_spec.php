@@ -16,7 +16,7 @@
  * limitations under the License. 
  */
 
-require_once dirname(__FILE__) . "/../../lib/limber_support/string.php";
+require_once "limber_support.php";
 
 describe("String support", function($spec) {
 	$spec->context("dealing with accents", function($spec) {
@@ -74,6 +74,42 @@ describe("String support", function($spec) {
 		
 		$spec->it("should return false for strings with content", function($spec) {
 			$spec(str_is_empty(" some content"))->should->be(false);
+		});
+	});
+	
+	$spec->context("pluralizing strings", function($spec) {
+		$spec->it("should pluralize regular cases", function($spec, $data) {
+			$spec(str_pluralize("post"))->should->be("posts");
+		});
+		
+		$spec->it("should pluralize inregular cases", function($spec, $data) {
+			$spec(str_pluralize("octopus"))->should->be("octopi");
+		});
+		
+		$spec->it("should not pluralize when it is an uncountable word", function($spec, $data) {
+			$spec(str_pluralize("sheep"))->should->be("sheep");
+		});
+		
+		$spec->it("should pluralize only last string when dealing with composed words", function($spec, $data) {
+			$spec(str_pluralize("CamelOctopus"))->should->be("CamelOctopi");
+		});
+	});
+	
+	$spec->context("singularizing strings", function($spec) {
+		$spec->it("should singularize regular cases", function($spec, $data) {
+			$spec(str_singularize("posts"))->should->be("post");
+		});
+		
+		$spec->it("should singularize inregular cases", function($spec, $data) {
+			$spec(str_singularize("octopi"))->should->be("octopus");
+		});
+		
+		$spec->it("should not singularize when it is an uncountable word", function($spec, $data) {
+			$spec(str_singularize("sheep"))->should->be("sheep");
+		});
+		
+		$spec->it("should singularize only last string when dealing with composed words", function($spec, $data) {
+			$spec(str_singularize("CamelOctopi"))->should->be("CamelOctopus");
 		});
 	});
 });

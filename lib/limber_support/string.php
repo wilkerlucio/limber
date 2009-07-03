@@ -93,3 +93,42 @@ function str_is_empty($string)
 {
 	return !trim($string);
 }
+
+/**
+ * Returns the plural form of the word in the string
+ *
+ * examples:
+ *
+ * <code>
+ * str_pluralize("post");         // => "posts"
+ * str_pluralize("octopus");      // => "octopi"
+ * str_pluralize("sheep");        // => "sheep"
+ * str_pluralize("words");        // => "words"
+ * str_pluralize("CamelOctopus"); // => "CamelOctopi"
+ * </code>
+ *
+ * @param string $word word to pluralize
+ * @return string the pluralized version of word
+ */
+function str_pluralize($string)
+{
+	return Inflections::pluralize($string);
+}
+
+/**
+ * The reverse of pluralize, returns the singular form of a word in a string.
+ *
+ * examples:
+ *
+ * <code>
+ * str_singularize("posts")       // => "post"
+ * str_singularize("octopi")      // => "octopus"
+ * str_singularize("sheep")       // => "sheep"
+ * str_singularize("word")        // => "word"
+ * str_singularize("CamelOctopi") // => "CamelOctopus"
+ * </code>
+ */
+function str_singularize($string)
+{
+	return Inflections::singularize($string);
+}
