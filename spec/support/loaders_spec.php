@@ -16,7 +16,7 @@
  * limitations under the License. 
  */
 
-require_once dirname(__FILE__) . "/../../lib/limber_support/loaders.php";
+require_once "limber_support.php";
 
 describe("Loaders support", function($spec) {
 	$spec->context("using path_autoloader", function($spec) {
