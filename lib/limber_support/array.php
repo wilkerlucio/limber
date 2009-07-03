@@ -238,4 +238,54 @@ function array_append(&$array, $data)
 	foreach ($data as $value) {
 		$array[] = $value;
 	}
+	
+	return $array;
+}
+
+/**
+ * Execute a series of executions into one accumulator value
+ *
+ * This method is used when you have a value, and want to progressive
+ * apply a serie of tasks with each of items into array to that value
+ *
+ * example:
+ *
+ * <code>
+ * array_inject(array(1, 2, 3), 0, function($acc, $value) { return $acc + $value }); //will return 6
+ * </code>
+ *
+ * @param array $array array with given data
+ * @param mixed $initial the initial value
+ * @param function $iterator iterator with task to do
+ * @return mixed the final value after the tasks
+ */
+function array_inject($array, $initial = 0, $iterator)
+{
+	foreach ($array as $value) {
+		$initial = $iterator($initial, $value);
+	}
+	
+	return $initial;
+}
+
+/**
+ * Get a flatten version of an array
+ *
+ * This method gets one array and remove all nesting levels, leaving an
+ * flat array as the result
+ *
+ * example:
+ *
+ * <code>
+ * array_flatten(array("data", array("deept", "inside"))); //will return array("data", "deept", "inside")
+ * </code>
+ *
+ * @param array $array array to flatten
+ * @return array new flatten array
+ */
+function array_flatten($array)
+{
+	return array_inject($array, array(), function($acc, $value) {
+		return array_append($acc, is_array($value) ? array_flatten($value) : array($value));
+	});
 }

@@ -102,4 +102,47 @@ describe("Array Support", function($spec) {
 			$spec($data)->should->be(array("a", 1, "c", "e", 2));
 		});
 	});
+	
+	$spec->context("injecting data", function($spec) {
+		$spec->it("injecting with numbers", function($spec) {
+			$result = array_inject(array(2, 3, 4), 0, function($acc, $current) {
+				return $acc + $current;
+			});
+			
+			$spec($result)->should->be(9);
+		});
+		
+		$spec->it("injecting with arrays", function($spec) {
+			$result = array_inject(array(2, 3, 4), array(), function($acc, $current) {
+				return array_append($acc, array($current, $current));
+			});
+			
+			$spec($result)->should->be(array(2, 2, 3, 3, 4, 4));
+		});
+	});
+	
+	$spec->context("flattening strings", function($spec) {
+		$spec->it("should do nothing into flat arrays", function($spec) {
+			$spec(array_flatten(array("some", "data")))->should->be(array("some", "data"));
+		});
+		
+		$spec->it("should flatten nested arrays", function($spec) {
+			$data = array(
+				"some",
+				array(
+					"nested", "data"
+				),
+				"into",
+				array(
+					"many",
+					array(
+						"deept",
+						array("levels")
+					)
+				)
+			);
+			
+			$spec(array_flatten($data))->should->be(array("some", "nested", "data", "into", "many", "deept", "levels"));
+		});
+	});
 });
