@@ -132,3 +132,14 @@ function str_singularize($string)
 {
 	return Inflections::singularize($string);
 }
+
+/**
+ * Get the table name for model
+ *
+ * @param string $class_name The name of class
+ * @return string tableized string
+ */
+function str_tableize($class_name)
+{
+	return str_pluralize(str_underscore($class_name));
+}

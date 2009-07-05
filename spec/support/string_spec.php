@@ -112,4 +112,10 @@ describe("String support", function($spec) {
 			$spec(str_singularize("CamelOctopi"))->should->be("CamelOctopus");
 		});
 	});
+	
+	$spec->context("tableizing strings", function($spec) {
+		$spec->it("should underscore and pluralize string", function($spec, $data) {
+			$spec(str_tableize("UserAttribute"))->should->be("user_attributes");
+		});
+	});
 });
