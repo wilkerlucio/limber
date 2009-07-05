@@ -235,6 +235,29 @@ function str_foreign_key($class_name, $separate_class_name_and_id_with_underscor
 }
 
 /**
+ * Turns a number into an ordinal string used to denote the position in an
+ * ordered sequence such as 1st, 2nd, 3rd, 4th.
+ *
+ * @param integer $number
+ * @return string
+ */
+function str_ordinalize($number)
+{
+	$number = (int) $number;
+	
+	if (in_array($number % 100, range(11, 13))) {
+		return $number . "th";
+	} else {
+		switch ($number % 10) {
+			case 1: return $number . "st";
+			case 2: return $number . "nd";
+			case 3: return $number . "rd";
+			default: return $number . "th";
+		}
+	}
+}
+
+/**
  * Remove a repeated character in sequence
  *
  * examples:

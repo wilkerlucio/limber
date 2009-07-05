@@ -165,6 +165,35 @@ describe("String support", function($spec) {
 		});
 	});
 	
+	$spec->context("ordinalizing strings", function($spec) {
+		$spec->it("should return Nst if number ends with 1", function($spec, $data) {
+			$spec(str_ordinalize("1001"))->should->be("1001st");
+		});
+		
+		$spec->it("should return Nnd if number ends with 2", function($spec, $data) {
+			$spec(str_ordinalize("1022"))->should->be("1022nd");
+		});
+		
+		$spec->it("should return Nrd if number ends with 3", function($spec, $data) {
+			$spec(str_ordinalize("12333"))->should->be("12333rd");
+		});
+		
+		$spec->it("should return Nth if number ends with 11, 12 or 13", function($spec, $data) {
+			$spec(str_ordinalize("1011"))->should->be("1011th");
+			$spec(str_ordinalize("1012"))->should->be("1012th");
+			$spec(str_ordinalize("1013"))->should->be("1013th");
+		});
+		
+		$spec->it("should return Nth if numbers ends with 4, 5, 6, 7, 8 or 9", function($spec, $data) {
+			$spec(str_ordinalize(104))->should->be("104th");
+			$spec(str_ordinalize(105))->should->be("105th");
+			$spec(str_ordinalize(106))->should->be("106th");
+			$spec(str_ordinalize(107))->should->be("107th");
+			$spec(str_ordinalize(108))->should->be("108th");
+			$spec(str_ordinalize(109))->should->be("109th");
+		});
+	});
+	
 	$spec->context("demodulizing strings", function($spec) {
 		$spec->it("should keep class name if its not namespaced", function($spec, $data) {
 			$spec(str_demodulize("Person"))->should->be("Person");
