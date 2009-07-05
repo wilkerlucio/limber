@@ -128,4 +128,10 @@ describe("String support", function($spec) {
 			$spec(str_squeeze("my--string-with---many-repeated----separators", "-"))->should->be("my-string-with-many-repeated-separators");
 		});
 	});
+	
+	$spec->context("dasherizing words", function($spec) {
+		$spec->it("should dasherize word", function($spec, $data) {
+			$spec(str_dasherize("my_underscored_string"))->should->be("my-underscored-string");
+		});
+	});
 });

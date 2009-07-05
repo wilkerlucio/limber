@@ -81,6 +81,20 @@ function str_underscore($string)
 }
 
 /**
+ * Turn underline characteres in dashe characteres
+ *
+ * example
+ *
+ * <code>
+ * str_dasherize("my_string"); // => "my-string"
+ * </code>
+ */
+function str_dasherize($underscored_word)
+{
+	return str_replace("_", "-", $underscored_word);
+}
+
+/**
  * Check if a string is empty
  *
  * An string is considered empty if there is no content or the content contains
