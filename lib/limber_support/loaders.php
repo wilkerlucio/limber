@@ -63,10 +63,10 @@ function require_dir($path, $recursive = true)
  * my_lib
  * |-- class1.php (Class1)
  * |-- package
- *     |-- class2.php (Package_Class2)
+ *     |-- class2.php (Package\Class2)
  *     |-- more_package
- *         |-- class_compose3.php (Package_MorePackage_ClassCompose3)
- *     |-- class4.php (Package_Class4)
+ *         |-- class_compose3.php (Package\MorePackage\ClassCompose3)
+ *     |-- class4.php (Package\Class4)
  *
  * According to exemple above, you can do something like this:
  *
