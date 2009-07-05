@@ -20,5 +20,15 @@ namespace LimberRecord;
 
 class Base
 {
-	public static function table_name($table_name = false) {}
+	public static function class_name()
+	{
+		return get_called_class();
+	}
+	
+	public static function table_name($table_name = false)
+	{
+		if ($table_name !== false) \ClassParams::set(self::class_name(), "table_name", $table_name);
+		
+		return \ClassParams::get(self::class_name(), "table_name", str_tableize(self::class_name()));
+	}
 }

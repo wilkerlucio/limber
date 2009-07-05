@@ -33,7 +33,7 @@ describe("LimberRecord Base", function($spec) {
 			
 			$spec(Item::table_name())->should->be("collection");
 			
-			Item::table_name(null);
+			Item::table_name(null); //restore table name
 		});
 	});
 });
