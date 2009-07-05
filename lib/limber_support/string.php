@@ -95,6 +95,18 @@ function str_dasherize($underscored_word)
 }
 
 /**
+ * Capitalizes the first word and turns underscores into spaces and strips a
+ * trailing "_id", if any. Like titleize, this is meant for creating pretty output.
+ *
+ * @param string $lower_case_and_underscored_word the word
+ * @return string
+ */
+function str_humanize($lower_case_and_underscored_word)
+{
+	return ucfirst(str_replace("_", " ", preg_replace("/_id$/", "", $lower_case_and_underscored_word)));
+}
+
+/**
  * Check if a string is empty
  *
  * An string is considered empty if there is no content or the content contains

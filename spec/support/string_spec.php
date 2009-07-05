@@ -134,4 +134,14 @@ describe("String support", function($spec) {
 			$spec(str_dasherize("my_underscored_string"))->should->be("my-underscored-string");
 		});
 	});
+	
+	$spec->context("humanizing strings", function($spec) {
+		$spec->it("should turn into a pretty string", function($spec, $data) {
+			$spec(str_humanize("some_string"))->should->be("Some string");
+		});
+		
+		$spec->it("should remove _id from the end of string", function($spec, $data) {
+			$spec(str_humanize("author_id"))->should->be("Author");
+		});
+	});
 });
