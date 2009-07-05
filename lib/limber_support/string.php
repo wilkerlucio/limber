@@ -125,6 +125,29 @@ function str_demodulize($class_name_with_namespace)
 }
 
 /**
+ * Replaces special characters in a string so that it may be used as part of a 'pretty' URL.
+ *
+ * @param string $string string to parameterize
+ * @param string $separator the charactere used to separete items
+ * @return string
+ */
+function str_parameterize($string, $sep = "-")
+{
+	$re_sep = preg_quote($sep);
+	
+	// replace accented chars with ther ascii equivalents
+	$string = str_transliterate($string);
+	// Turn unwanted chars into the seperator
+	$string = preg_replace("/[^a-z0-9\-_\+]+/i", $sep, $string);
+	// No more than one of the separator in a row.
+	$string = str_squeeze($string, $sep);
+	// Remove leading/trailing separator.
+	$string = preg_replace("/^{$re_sep}|{$re_sep}$/i", '', $string);
+	
+	return strtolower($string);
+}
+
+/**
  * Check if a string is empty
  *
  * An string is considered empty if there is no content or the content contains

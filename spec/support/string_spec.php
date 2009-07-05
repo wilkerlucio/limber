@@ -154,4 +154,14 @@ describe("String support", function($spec) {
 			$spec(str_demodulize("Models\\Person"))->should->be("Person");
 		});
 	});
+	
+	$spec->context("parameterizing strings", function($spec) {
+		$spec->it("should keep a clean string to use into url", function($spec, $data) {
+			$spec(str_parameterize("My Complex  é_string"))->should->be("my-complex-e_string");
+		});
+		
+		$spec->it("should accept a custom separator", function($spec, $data) {
+			$spec(str_parameterize(" My Complex  é_string", "_"))->should->be("my_complex_e_string");
+		});
+	});
 });
