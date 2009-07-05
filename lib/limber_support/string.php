@@ -41,7 +41,7 @@ function str_acute($string)
  * @param string $string string to remove accents
  * @return string
  */
-function str_remove_accents($string)
+function str_transliterate($string)
 {
 	$with_accents    = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿŔŕ';
 	$without_accents = 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYbsaaaaaaaceeeeiiiidnoooooouuuyybyRr';

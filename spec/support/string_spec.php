@@ -31,7 +31,7 @@ describe("String support", function($spec) {
 		});
 		
 		$spec->it("should replace the characteres with accents to without accents ones", function($spec, $data) {
-			$spec(str_remove_accents("aéi õÔ"))->should->be("aei oO");
+			$spec(str_transliterate("aéi õÔ"))->should->be("aei oO");
 		});
 	});
 	
