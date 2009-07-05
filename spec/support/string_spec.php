@@ -47,6 +47,10 @@ describe("String support", function($spec) {
 		$spec->it("should camelize when found underscores", function($spec) {
 			$spec(str_camelize("underscore_splited_string"))->should->be("UnderscoreSplitedString");
 		});
+		
+		$spec->it("should accept a second parameter to put first letter in downcase", function($spec, $data) {
+			$spec(str_camelize("some_string", false))->should->be("someString");
+		});
 	});
 	
 	$spec->context("underscoring string", function($spec) {

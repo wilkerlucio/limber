@@ -56,13 +56,13 @@ function str_transliterate($string)
  * str_camelize("limber_record") // => "LimberRecord"
  * </code>
  */
-function str_camelize($string)
+function str_camelize($string, $first_letter_in_uppercase = true)
 {
-	$pieces = explode("_", $string);
-	
-	return implode("", array_map(function($piece) {
+	$string = implode("", array_map(function($piece) {
 		return ucfirst($piece);
-	}, $pieces));
+	}, explode("_", $string)));
+	
+	return $first_letter_in_uppercase ? $string : lcfirst($string);
 }
 
 /**
