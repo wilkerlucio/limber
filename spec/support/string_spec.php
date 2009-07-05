@@ -51,6 +51,10 @@ describe("String support", function($spec) {
 		$spec->it("should accept a second parameter to put first letter in downcase", function($spec, $data) {
 			$spec(str_camelize("some_string", false))->should->be("someString");
 		});
+		
+		$spec->it("should get namespaces back", function($spec, $data) {
+			$spec(str_camelize("some_string/pack"))->should->be("SomeString\\Pack");
+		});
 	});
 	
 	$spec->context("underscoring string", function($spec) {
@@ -64,6 +68,10 @@ describe("String support", function($spec) {
 		
 		$spec->it("should underscore camelcased strings", function($spec) {
 			$spec(str_underscore("CamelCasedString"))->should->be("camel_cased_string");
+		});
+		
+		$spec->it("should serialize namespaces to paths", function($spec, $data) {
+			$spec(str_underscore("Camel\\CasedClass"))->should->be("camel/cased_class");
 		});
 	});
 	

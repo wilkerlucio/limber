@@ -62,6 +62,10 @@ function str_camelize($string, $first_letter_in_uppercase = true)
 		return ucfirst($piece);
 	}, explode("_", $string)));
 	
+	$string = implode("\\", array_map(function($piece) {
+		return ucfirst($piece);
+	}, explode("/", $string)));
+	
 	return $first_letter_in_uppercase ? $string : lcfirst($string);
 }
 
