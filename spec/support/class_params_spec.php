@@ -18,7 +18,7 @@
 
 require_once "limber_support.php";
 
-class A
+class ClassParamsTestA
 {
 	public static function get_static_data()
 	{
@@ -31,15 +31,15 @@ class A
 	}
 }
 
-class B extends A {}
-class C extends A {}
+class ClassParamsTestB extends ClassParamsTestA {}
+class ClassParamsTestC extends ClassParamsTestA {}
 
 describe("ClassParams class", function($spec) {
 	$spec->it("should preserve data between child classes", function($spec, $data) {
-		B::set_static_data("from b");
-		C::set_static_data("data from c");
+		ClassParamsTestB::set_static_data("from b");
+		ClassParamsTestC::set_static_data("data from c");
 		
-		$spec(B::get_static_data())->should->be("from b");
-		$spec(C::get_static_data())->should->be("data from c");
+		$spec(ClassParamsTestB::get_static_data())->should->be("from b");
+		$spec(ClassParamsTestC::get_static_data())->should->be("data from c");
 	});
 });
