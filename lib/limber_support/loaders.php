@@ -75,9 +75,9 @@ function require_dir($path, $recursive = true)
  *
  * //all classes above will be autoloaded
  * $c1 = new Class1();
- * $c2 = new Package_Class2();
- * $c3 = new Package_MorePackage_Class3();
- * $c4 = new Package_Class4();
+ * $c2 = new Package\Class2();
+ * $c3 = new Package\MorePackage\Class3();
+ * $c4 = new Package\Class4();
  * </code>
  *
  * @param string $path base path of classes
