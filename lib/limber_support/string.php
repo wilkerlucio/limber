@@ -107,6 +107,24 @@ function str_humanize($lower_case_and_underscored_word)
 }
 
 /**
+ * Removes the namespace of a class
+ *
+ * examples
+ *
+ * <code>
+ * str_demodulize("Models\Person"); // => "Person"
+ * str_demodulize("Person"); // => "Person"
+ * </code>
+ *
+ * @param string $class_name_with_namespace
+ * @return string
+ */
+function str_demodulize($class_name_with_namespace)
+{
+	return preg_replace('/^.*\\\\/', "", $class_name_with_namespace);
+}
+
+/**
  * Check if a string is empty
  *
  * An string is considered empty if there is no content or the content contains

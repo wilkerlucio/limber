@@ -144,4 +144,14 @@ describe("String support", function($spec) {
 			$spec(str_humanize("author_id"))->should->be("Author");
 		});
 	});
+	
+	$spec->context("demodulizing strings", function($spec) {
+		$spec->it("should keep class name if its not namespaced", function($spec, $data) {
+			$spec(str_demodulize("Person"))->should->be("Person");
+		});
+		
+		$spec->it("should remove the namespaces from class name", function($spec, $data) {
+			$spec(str_demodulize("Models\\Person"))->should->be("Person");
+		});
+	});
 });
