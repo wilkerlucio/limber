@@ -101,9 +101,9 @@ abstract class ClassParams
 	 * @param string $param the param to be got
 	 * @return mixed
 	 */
-	public static function get($class, $param)
+	public static function get($class, $param, $default = null)
 	{
-		return isset(self::$classes[$class][$param]) ? self::$classes[$class][$param] : null;
+		return isset(self::$classes[$class][$param]) ? self::$classes[$class][$param] : $default;
 	}
 	
 	/**
