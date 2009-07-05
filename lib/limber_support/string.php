@@ -212,6 +212,17 @@ function str_tableize($class_name)
 }
 
 /**
+ * Get the class name for the table
+ *
+ * @param string $table_name
+ * @return string
+ */
+function str_classify($table_name)
+{
+	return str_camelize(str_singularize($table_name));
+}
+
+/**
  * Remove a repeated character in sequence
  *
  * examples:

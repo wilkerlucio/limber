@@ -123,6 +123,12 @@ describe("String support", function($spec) {
 		});
 	});
 	
+	$spec->context("classifing strings", function($spec) {
+		$spec->it("should camel case and singularize string", function($spec, $data) {
+			$spec(str_classify("user_attributes"))->should->be("UserAttribute");
+		});
+	});
+	
 	$spec->context("squeezing strings", function($spec) {
 		$spec->it("should remove repeated characteres in sequence", function($spec, $data) {
 			$spec(str_squeeze("my--string-with---many-repeated----separators", "-"))->should->be("my-string-with-many-repeated-separators");
