@@ -82,8 +82,8 @@ describe("String support", function($spec) {
 			$spec(str_pluralize("post"))->should->be("posts");
 		});
 		
-		$spec->it("should pluralize inregular cases", function($spec, $data) {
-			$spec(str_pluralize("octopus"))->should->be("octopi");
+		$spec->it("should pluralize irregular cases", function($spec, $data) {
+			$spec(str_pluralize("person"))->should->be("people");
 		});
 		
 		$spec->it("should not pluralize when it is an uncountable word", function($spec, $data) {
@@ -100,8 +100,8 @@ describe("String support", function($spec) {
 			$spec(str_singularize("posts"))->should->be("post");
 		});
 		
-		$spec->it("should singularize inregular cases", function($spec, $data) {
-			$spec(str_singularize("octopi"))->should->be("octopus");
+		$spec->it("should singularize irregular cases", function($spec, $data) {
+			$spec(str_singularize("people"))->should->be("person");
 		});
 		
 		$spec->it("should not singularize when it is an uncountable word", function($spec, $data) {

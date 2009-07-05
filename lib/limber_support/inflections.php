@@ -37,13 +37,13 @@ class Inflections
 	public static function irregular($singular, $plural)
 	{
 		if (strtoupper($singular[0]) == strtoupper($plural[0])) {
-			self::plural("/({$singular[0]})" . substr($singular, 1, -1) . "$/i", '\1' . substr($plural, 1, -1));
-			self::singular("/({$plural[0]})" . substr($plural, 1, -1) . "$/i", '\1' . substr($singular, 1, -1));
+			self::plural("/({$singular[0]})" . substr($singular, 1) . "$/i", '\1' . substr($plural, 1));
+			self::singular("/({$plural[0]})" . substr($plural, 1) . "$/i", '\1' . substr($singular, 1));
 		} else {
-			self::plural("/" . strtoupper($singular[0]) . "(?i)" . substr($singular, 1, -1) . "$/i", strtoupper($plural[0]) . substr($plural, 1, -1));
-			self::plural("/" . strtolower($singular[0]) . "(?i)" . substr($singular, 1, -1) . "$/i", strtolower($plural[0]) . substr($plural, 1, -1));
-			self::singular("/" . strtoupper($plural[0]) . "(?i)" . substr($plural, 1, -1) . "$/i", strtoupper($singular[0]) . substr($singular, 1, -1));
-			self::singular("/" . strtolower($plural[0]) . "(?i)" . substr($plural, 1, -1) . "$/i", strtolower($singular[0]) . substr($singular, 1, -1));
+			self::plural("/" . strtoupper($singular[0]) . "(?i)" . substr($singular, 1) . "$/i", strtoupper($plural[0]) . substr($plural, 1));
+			self::plural("/" . strtolower($singular[0]) . "(?i)" . substr($singular, 1) . "$/i", strtolower($plural[0]) . substr($plural, 1));
+			self::singular("/" . strtoupper($plural[0]) . "(?i)" . substr($plural, 1) . "$/i", strtoupper($singular[0]) . substr($singular, 1));
+			self::singular("/" . strtolower($plural[0]) . "(?i)" . substr($plural, 1) . "$/i", strtolower($singular[0]) . substr($singular, 1));
 		}
 	}
 	
