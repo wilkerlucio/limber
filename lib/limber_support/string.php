@@ -74,8 +74,10 @@ function str_camelize($string, $first_letter_in_uppercase = true)
  */
 function str_underscore($string)
 {
+	$string = str_replace("\\", "/", $string);
 	$string = preg_replace("/([A-Z]+)([A-Z][a-z])/", '$1_$2', $string);
 	$string = preg_replace("/([a-z\d])([A-Z])/", '$1_$2', $string);
+	$string = strtr($string, "-", "_");
 	
 	return strtolower($string);
 }
