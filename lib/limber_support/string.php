@@ -223,6 +223,18 @@ function str_classify($table_name)
 }
 
 /**
+ * Get the foreign key of a class name
+ *
+ * @param string $class_name
+ * @param boolean $separate_class_name_and_id_with_underscore
+ * @return string
+ */
+function str_foreign_key($class_name, $separate_class_name_and_id_with_underscore = true)
+{
+	return str_underscore(str_demodulize($class_name)) . ($separate_class_name_and_id_with_underscore ? "_id" : "id");
+}
+
+/**
  * Remove a repeated character in sequence
  *
  * examples:

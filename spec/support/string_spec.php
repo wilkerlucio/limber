@@ -151,6 +151,20 @@ describe("String support", function($spec) {
 		});
 	});
 	
+	$spec->context("get foreign key", function($spec) {
+		$spec->it("should get the foreign key from class", function($spec, $data) {
+			$spec(str_foreign_key("Person"))->should->be("person_id");
+		});
+		
+		$spec->it("should remove the underline separator if user asks to", function($spec, $data) {
+			$spec(str_foreign_key("Person", false))->should->be("personid");
+		});
+		
+		$spec->it("should demodulize class name", function($spec, $data) {
+			$spec(str_foreign_key("Models\Person"))->should->be("person_id");
+		});
+	});
+	
 	$spec->context("demodulizing strings", function($spec) {
 		$spec->it("should keep class name if its not namespaced", function($spec, $data) {
 			$spec(str_demodulize("Person"))->should->be("Person");
