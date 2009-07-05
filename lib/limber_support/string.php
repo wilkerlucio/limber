@@ -143,3 +143,23 @@ function str_tableize($class_name)
 {
 	return str_pluralize(str_underscore($class_name));
 }
+
+/**
+ * Remove a repeated character in sequence
+ *
+ * examples:
+ * 
+ * <code>
+ * str_squeeze("my-string--with-repeated---character", "-"); // => "my-string-with-repeated-character"
+ * </code>
+ *
+ * @param string $string string to squeeze character
+ * @param string $character character to squeeze
+ * @return string squeezed string
+ */
+function str_squeeze($string, $character)
+{
+	$character = preg_quote($character);
+	
+	return preg_replace("/({$character}){2,}/", '\1', $string);
+}
