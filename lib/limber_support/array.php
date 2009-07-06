@@ -289,3 +289,42 @@ function array_flatten($array)
 		return array_append($acc, is_array($value) ? array_flatten($value) : array($value));
 	});
 }
+
+/**
+ * Partition one array
+ *
+ * Split one array in two, giving the true data into first array, and false
+ * data into the second array. You can use a custom iterator to decide if a
+ * value is true or false
+ *
+ * <code>
+ * $data = array(1, 2, 3, 4, 5);
+ *
+ * list($even, $odd) = array_partition($data, function($item) { return ($item % 2) == 0 });
+ *
+ * echo $even; // => array(2, 4)
+ * echo $odd; // => array(1, 3, 5)
+ * </code>
+ *
+ * @param array $array data to partition
+ * @param function $iterator
+ * @return array
+ */
+function array_partition($array, $iterator = null)
+{
+	$trues = $falses = array();
+	
+	if (!$iterator) {
+		$iterator = function($var) { return $var; };
+	}
+	
+	foreach ($array as $item) {
+		if ($iterator($item)) {
+			$trues[] = $item;
+		} else {
+			$falses[] = $item;
+		}
+	}
+	
+	return array($trues, $falses);
+}

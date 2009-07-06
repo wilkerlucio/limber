@@ -145,4 +145,22 @@ describe("Array Support", function($spec) {
 			$spec(array_flatten($data))->should->be(array("some", "nested", "data", "into", "many", "deept", "levels"));
 		});
 	});
+	
+	$spec->context("partitionating arrays", function($spec) {
+		$spec->it("should return 2 arrays", function($spec, $data) {
+			$spec(count(array_partition(array(1, 2, 3))))->should->be(2);
+		});
+		
+		$spec->it("should partition by true and false by default", function($spec, $data) {
+			$spec(array_partition(array(2, 3, "", "string", false)))->should->be(array(array(2, 3, "string"), array("", false)));
+		});
+		
+		$spec->it("should accept a custom iterator to decide how to partition", function($spec, $data) {
+			$partitioned = array_partition(array(1, 2, 3, 4, 5), function($item) {
+				return ($item % 2) == 0;
+			});
+			
+			$spec($partitioned)->should->be(array(array(2, 4), array(1, 3, 5)));
+		});
+	});
 });
