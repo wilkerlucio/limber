@@ -20,6 +20,13 @@ namespace LimberRecord;
 
 class Base
 {
+	/**
+	 * Get current class name
+	 *
+	 * Gets the name of current class, this method is created only by convenience
+	 *
+	 * @return string current class name
+	 */
 	public static function class_name()
 	{
 		return get_called_class();
