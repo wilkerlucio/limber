@@ -32,8 +32,27 @@ describe("LimberRecord Base", function($spec) {
 			Item::table_name("collection");
 			
 			$spec(Item::table_name())->should->be("collection");
+			$spec(Person::table_name())->should->be("people");
 			
 			Item::table_name(null); //restore table name
+		});
+	});
+	
+	$spec->context("getting primary key field of table", function($spec) {
+		$spec->it("should return id by default", function($spec, $data) {
+			$spec(Person::primary_key_field())->should->be("id");
+		});
+		
+		$spec->it("should accept an argument to be the new primary key field", function($spec, $data) {
+			Person::primary_key_field("person_id");
+			
+			$spec(Person::primary_key_field())->should->be("person_id");
+		});
+		
+		$spec->it("should return to default value if null is given as argument", function($spec, $data) {
+			Person::primary_key_field(null);
+			
+			$spec(Person::primary_key_field())->should->be("id");
 		});
 	});
 });

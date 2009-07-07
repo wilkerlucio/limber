@@ -25,10 +25,27 @@ class Base
 		return get_called_class();
 	}
 	
+	public static function get_static_data($name, $default = null)
+	{
+		return \ClassParams::get(static::class_name(), $name, $default);
+	}
+	
+	public static function set_static_data($name, $value)
+	{
+		\ClassParams::set(static::class_name(), $name, $value);
+	}
+	
 	public static function table_name($table_name = false)
 	{
-		if ($table_name !== false) \ClassParams::set(self::class_name(), "table_name", $table_name);
+		if ($table_name !== false) static::set_static_data("table_name", $table_name);
 		
-		return \ClassParams::get(self::class_name(), "table_name", str_tableize(self::class_name()));
+		return static::get_static_data("table_name", str_tableize(static::class_name()));
+	}
+	
+	public static function primary_key_field($primary_key_field = false)
+	{
+		if ($primary_key_field !== false) static::set_static_data("primary_key_field", $primary_key_field);
+		
+		return static::get_static_data("primary_key_field", "id");
 	}
 }
