@@ -24,6 +24,23 @@
  */
 
 /**
+ * Get the value of array at given index
+ *
+ * If you access an undefined index of array, the PHP will generate a warning,
+ * this function helps you to avoid this warning, and a plus you can set a
+ * default value to be returned if the index is not defined
+ *
+ * @param array $array the given array
+ * @param mixed $index the index into array
+ * @param mixed $default the default value if array doesn't exists
+ * @return mixed
+ */
+function array_get($array, $index, $default = null)
+{
+	return isset($array[$index]) ? $array[$index] : $default;
+}
+
+/**
  * Get a grouped array based on it's contents
  *
  * This method can be usefull when need to split your array into groups defined

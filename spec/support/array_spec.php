@@ -41,6 +41,20 @@ class A
 class B {}
 
 describe("Array Support", function($spec) {
+	$spec->context("getting value of one array index", function($spec) {
+		$spec->it("should return the value of requested index", function($spec, $data) {
+			$spec(array_get(array(1, 2, 3), 1))->should->be(2);
+		});
+		
+		$spec->it("should return null if index doesnt exists", function($spec, $data) {
+			$spec(array_get(array(1, 2, 3), 10))->should->be(null);
+		});
+		
+		$spec->it("should should return a custom default value if sent", function($spec, $data) {
+			$spec(array_get(array(1, 2, 3), 10, "not found"))->should->be("not found");
+		});
+	});
+	
 	$spec->context("grouping array data with group_by", function($spec) {
 		$spec->it("should group data by a function criteria", function($spec) {
 			$strings = array("apple", "bee", "money", "hii", "banana", "monkey", "bear");
