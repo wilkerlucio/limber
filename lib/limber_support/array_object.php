@@ -18,7 +18,7 @@
 
 namespace LimberSupport;
 
-class ArrayObject implements \ArrayAccess, \Countable, \Iterator
+class ArrayObject extends DynamicObject implements \ArrayAccess, \Countable, \Iterator
 {
 	private $data;
 	

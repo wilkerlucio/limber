@@ -17,5 +17,7 @@
  */
 
 require_once "limber_support/loaders.php";
+require_once "limber_support/class_params.php";
+require_once "limber_support/dynamic_object.php";
 
 require_dir(__DIR__ . "/limber_support");
