@@ -35,6 +35,10 @@ class ClassParamsTestB extends ClassParamsTestA {}
 class ClassParamsTestC extends ClassParamsTestA {}
 
 describe("ClassParams class", function($spec) {
+	$spec->it("should get a default value if index is not set", function($spec, $data) {
+		$spec(ClassParams::get("test_class", "some", "default"))->should->be("default");
+	});
+	
 	$spec->it("should preserve data between child classes", function($spec, $data) {
 		ClassParamsTestB::set_static_data("from b");
 		ClassParamsTestC::set_static_data("data from c");

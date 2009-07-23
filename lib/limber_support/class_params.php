@@ -103,6 +103,8 @@ abstract class ClassParams
 	 */
 	public static function get($class, $param, $default = null)
 	{
+		$class = str_class_key($class);
+		
 		return isset(self::$classes[$class][$param]) ? self::$classes[$class][$param] : $default;
 	}
 	
@@ -115,6 +117,8 @@ abstract class ClassParams
 	 */
 	public static function set($class, $param, $value)
 	{
+		$class = str_class_key($class);
+
 		self::$classes[$class][$param] = $value;
 	}
 	
@@ -130,6 +134,8 @@ abstract class ClassParams
 	 */
 	public static function append($class, $param, $value)
 	{
+		$class = str_class_key($class);
+
 		self::$classes[$class][$param][] = $value;
 	}
 }
