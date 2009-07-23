@@ -112,7 +112,6 @@ namespace LimberSupport;
 abstract class DynamicObject
 {
 	public $_instance_methods = array();
-	public $_dynamic_attributes = array();
 	
 	public function define_instance_method($method_name, $callback)
 	{
