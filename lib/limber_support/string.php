@@ -131,6 +131,17 @@ function str_demodulize($class_name_with_namespace)
 }
 
 /**
+ * Get the class name ready to use into a key of an array
+ *
+ * @param string $class_name_with_namespace
+ * @return string
+ */
+function str_class_key($class_name_with_namespace)
+{
+	return str_replace("\\", "_", $class_name_with_namespace);
+}
+
+/**
  * Replaces special characters in a string so that it may be used as part of a 'pretty' URL.
  *
  * @param string $string string to parameterize

@@ -212,6 +212,12 @@ describe("String support", function($spec) {
 		});
 	});
 	
+	$spec->context("getting class as array key", function($spec) {
+		$spec->it("should remove de \\ notation", function($spec, $data) {
+			$spec(str_class_key("My\\Namespace"))->should->be("My_Namespace");
+		});
+	});
+	
 	$spec->context("parameterizing strings", function($spec) {
 		$spec->it("should keep a clean string to use into url", function($spec, $data) {
 			$spec(str_parameterize("My Complex  é_string"))->should->be("my-complex-e_string");
