@@ -26,6 +26,8 @@ class ArrayObjectExtendedTest extends ArrayObject
 	
 	public function __construct()
 	{
+		parent::__construct();
+		
 		$n = 10;
 	}
 }
