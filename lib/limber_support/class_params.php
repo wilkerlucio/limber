@@ -16,6 +16,8 @@
  * limitations under the License. 
  */
 
+namespace LimberSupport;
+
 /**
  * This class provides a simple way to store class level variables
  *

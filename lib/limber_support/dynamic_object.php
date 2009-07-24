@@ -120,28 +120,28 @@ abstract class DynamicObject
 	
 	public static function define_getter($callback)
 	{
-		\ClassParams::append(get_called_class(), "getters", $callback);
+		ClassParams::append(get_called_class(), "getters", $callback);
 	}
 	
 	public static function define_setter($callback)
 	{
-		\ClassParams::append(get_called_class(), "setters", $callback);
+		ClassParams::append(get_called_class(), "setters", $callback);
 	}
 	
 	public static function define_method($method_name, $callback)
 	{
-		$methods = \ClassParams::get(get_called_class(), "methods", array());
+		$methods = ClassParams::get(get_called_class(), "methods", array());
 		$methods[$method_name] = $callback;
 		
-		\ClassParams::set(get_called_class(), "methods", $methods);
+		ClassParams::set(get_called_class(), "methods", $methods);
 	}
 	
 	public static function define_static_method($method_name, $callback)
 	{
-		$methods = \ClassParams::get(get_called_class(), "static_methods", array());
+		$methods = ClassParams::get(get_called_class(), "static_methods", array());
 		$methods[$method_name] = $callback;
 		
-		\ClassParams::set(get_called_class(), "static_methods", $methods);
+		ClassParams::set(get_called_class(), "static_methods", $methods);
 	}
 	
 	public function has_method($method_name)
@@ -157,7 +157,7 @@ abstract class DynamicObject
 		$iterator = new ClassAncestorsIterator(get_class($this));
 		
 		foreach ($iterator as $current_class) {
-			$methods = \ClassParams::get($current_class, "methods", array());
+			$methods = ClassParams::get($current_class, "methods", array());
 			
 			if (isset($methods[$method_name])) {
 				return true;
@@ -203,7 +203,7 @@ abstract class DynamicObject
 		$iterator = new ClassAncestorsIterator(get_class($this));
 		
 		foreach ($iterator as $current_class) {
-			$getters = array_reverse(\ClassParams::get($current_class, "getters", array()));
+			$getters = array_reverse(ClassParams::get($current_class, "getters", array()));
 			
 			foreach ($getters as $getter) {
 				try {
@@ -226,7 +226,7 @@ abstract class DynamicObject
 		$iterator = new ClassAncestorsIterator(get_class($this));
 		
 		foreach ($iterator as $current_class) {
-			$setters = array_reverse(\ClassParams::get($current_class, "setters", array()));
+			$setters = array_reverse(ClassParams::get($current_class, "setters", array()));
 			
 			foreach ($setters as $setter) {
 				try {
@@ -258,7 +258,7 @@ abstract class DynamicObject
 		}
 		
 		foreach ($iterator as $current_class) {
-			$methods = \ClassParams::get($current_class, "methods", array());
+			$methods = ClassParams::get($current_class, "methods", array());
 			
 			if (isset($methods[$method])) {
 				try {
@@ -278,7 +278,7 @@ abstract class DynamicObject
 		array_unshift($arguments, get_called_class());
 		
 		foreach ($iterator as $current_class) {
-			$methods = \ClassParams::get($current_class, "static_methods", array());
+			$methods = ClassParams::get($current_class, "static_methods", array());
 			
 			if (isset($methods[$method])) {
 				try {

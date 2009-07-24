@@ -16,6 +16,8 @@
  * limitations under the License. 
  */
 
+namespace LimberSupport;
+
 require_once "limber_support.php";
 
 class ClassParamsTestA
