@@ -20,6 +20,16 @@ namespace LimberSupport;
 
 require 'limber_support.php';
 
+class ArrayObjectExtendedTest extends ArrayObject
+{
+	public $n;
+	
+	public function __construct()
+	{
+		$n = 10;
+	}
+}
+
 describe("ArrayObject class", function($spec) {
 	$spec->context("constructing", function($spec) {
 		$spec->it("should start empty", function($spec, $data) {
@@ -46,17 +56,22 @@ describe("ArrayObject class", function($spec) {
 	});
 	
 	$spec->context("doing array access", function($spec) {
+		$spec->before_each(function($data) {
+			$data->enum = new ArrayObject(1, 2, 3);
+		});
+		
 		$spec->it("should get an array index", function($spec, $data) {
-			$enum = new ArrayObject(1, 2, 3);
-			
-			$spec($enum[1])->should->be(2);
+			$spec($data->enum[1])->should->be(2);
 		});
 		
 		$spec->it("should set an array index", function($spec, $data) {
-			$enum = new ArrayObject(1, 2, 3);
-			$enum[2] = 5;
+			$data->enum[2] = 5;
 			
-			$spec($enum[2])->should->be(5);
+			$spec($data->enum[2])->should->be(5);
+		});
+		
+		$spec->it("should should return null when the index doesnt haves a value", function($spec, $data) {
+			$spec($data->enum[20])->should->be(null);
 		});
 	});
 	
@@ -85,6 +100,30 @@ describe("ArrayObject class", function($spec) {
 		});
 	});
 	
+	$spec->context("doing stack and queue operations", function($spec) {
+		$spec->before_each(function($data) {
+			$data->enum = new ArrayObject(2, 3);
+		});
+		
+		$spec->it("should unshift elements into array", function($spec, $data) {
+			$spec($data->enum->unshift(0, 1)->get_array())->should->be(array(1, 0, 2, 3));
+		});
+		
+		$spec->it("should shift elements from array", function($spec, $data) {
+			$spec($data->enum->shift())->should->be(2);
+			$spec($data->enum->count())->should->be(1);
+		});
+		
+		$spec->it("should push elements into array", function($spec, $data) {
+			$spec($data->enum->push(0, 1)->get_array())->should->be(array(2, 3, 0, 1));
+		});
+		
+		$spec->it("should pop elements from array", function($spec, $data) {
+			$spec($data->enum->pop())->should->be(3);
+			$spec($data->enum->count())->should->be(1);
+		});
+	});
+	
 	$spec->context("iterating over enumerable", function($spec) {
 		$spec->it("should iterate over enumerable items", function($spec, $data) {
 			$enum = new ArrayObject(1, 2);
@@ -96,6 +135,37 @@ describe("ArrayObject class", function($spec) {
 			}
 			
 			$spec($sum)->should->be(3);
+		});
+	});
+	
+	$spec->context("mapping data", function($spec) {
+		$spec->it("should map the data with the given function", function($spec, $data) {
+			$enum = new ArrayObject(1, 2, 3);
+			
+			$spec($enum->map(function($n) {return $n * 2;})->get_array())->should->be(array(2, 4, 6));
+		});
+		
+		$spec->it("should returned a cloned version of current object", function($spec, $data) {
+			$enum = new ArrayObjectExtendedTest(1);
+			$enum->n = 20;
+			$mapped = $enum->map(function($n) {return $n * 2;});
+			
+			$spec(get_class($mapped))->should->be(get_class($enum));
+			$spec($mapped->n)->should->be(20);
+		});
+		
+		$spec->it("should not change current data of object", function($spec, $data) {
+			$enum = new ArrayObject(1, 2, 3);
+			$mapped = $enum->map(function($n) {return $n * 2;});
+			
+			$spec($enum->get_array())->should->be(array(1, 2, 3));
+		});
+		
+		$spec->it("should map current data if calls map_self", function($spec, $data) {
+			$enum = new ArrayObject(1, 2, 3);
+			$enum->map_self(function($n) {return $n * 2;});
+			
+			$spec($enum->get_array())->should->be(array(2, 4, 6));
 		});
 	});
 });

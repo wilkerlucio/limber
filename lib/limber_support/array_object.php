@@ -127,11 +127,84 @@ class ArrayObject extends DynamicObject implements \ArrayAccess, \Countable, \It
 	}
 	
 	/**
+	 * Add elements at beggining of array
+	 *
+	 * @param [...] elements to be shifted
+	 */
+	public function unshift()
+	{
+		$elements = func_get_args();
+		
+		foreach ($elements as $element) {
+			array_unshift($this->data, $element);
+		}
+		
+		return $this;
+	}
+	
+	/**
+	 * Remove the first element of array and return it
+	 *
+	 * @return mixed
+	 */
+	public function shift()
+	{
+		return array_shift($this->data);
+	}
+	
+	/**
 	 * Add new elements at the end of array
 	 */
 	public function push()
 	{
-		array_append($this->data, func_get_args());
+		$elements = func_get_args();
+		
+		array_append($this->data, $elements);
+		
+		return $this;
+	}
+	
+	/**
+	 * Remove the last element of array and return it
+	 *
+	 * @return mixed
+	 */
+	public function pop()
+	{
+		return array_pop($this->data);
+	}
+	
+	/**
+	 * Map the current data of object
+	 *
+	 * note: this method clones the current object and return the cloned object
+	 *       with replaced data by mapping, for performance reasons you should
+	 *       use map_self to only change current data if you dont need the old
+	 *       copy
+	 *
+	 * @param function Mapper function
+	 * @return ArrayObject
+	 */
+	public function map($callback)
+	{
+		$obj = clone $this;
+		$obj->map_self($callback);
+		
+		return $obj;
+	}
+	
+	/**
+	 * Map current data of object
+	 *
+	 * note: after call this method you will lose the old data, to map data to a
+	 *       copy of object use map
+	 *
+	 * @param function Mapper function
+	 * @return ArrayObject
+	 */
+	public function map_self($callback)
+	{
+		$this->data = array_map($callback, $this->data);
 		
 		return $this;
 	}
