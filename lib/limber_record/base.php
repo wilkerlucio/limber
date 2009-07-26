@@ -18,7 +18,7 @@
 
 namespace LimberRecord;
 
-class Base
+class Base extends \LimberSupport\DynamicObject
 {
 	/**
 	 * Get current class name
@@ -41,7 +41,7 @@ class Base
 	 */
 	public static function get_static_data($name, $default = null)
 	{
-		return \ClassParams::get(static::class_name(), $name, $default);
+		return \LimberSupport\ClassParams::get(static::class_name(), $name, $default);
 	}
 	
 	/**
@@ -52,7 +52,7 @@ class Base
 	 */
 	public static function set_static_data($name, $value)
 	{
-		\ClassParams::set(static::class_name(), $name, $value);
+		\LimberSupport\ClassParams::set(static::class_name(), $name, $value);
 	}
 	
 	/**
