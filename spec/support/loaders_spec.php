@@ -44,4 +44,16 @@ describe("Loaders support", function($spec) {
 			$spec(class_exists("Package_Sub_MoreDummy"))->should->be(true);
 		});
 	});
+	
+	$spec->context("using include path functions", function($spec) {
+		$spec->it("should add a path to include_path", function($spec, $data) {
+			add_include_path(dirname(__FILE__) . "/include_path_test");
+			
+			$spec(include("file.php"))->should->be("im ok");
+		});
+		
+		$spec->it("should not add a path to include path if the path is already at include path before", function($spec, $data) {
+			$spec(add_include_path(dirname(__FILE__) . "/include_path_test"))->should->be(false);
+		});
+	});
 });

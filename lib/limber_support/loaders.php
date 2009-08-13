@@ -108,3 +108,28 @@ function path_autoloader($path, $autoregister = true)
 	
 	return $fn;
 }
+
+/**
+ * Add a new path to include_path
+ *
+ * This method simple add a new path to include path, this method also checks
+ * if the path isn't already included at include path
+ *
+ * @param string $path the path to be added to include path
+ * @return boolean true if the path is added
+ */
+function add_include_path($path)
+{
+	$include_path  = ini_get("include_path");
+	$paths = explode(PATH_SEPARATOR, $include_path);
+	
+	if (in_array($path, $paths)) {
+		return false;
+	}
+	
+	$include_path .= PATH_SEPARATOR . $path;
+	
+	ini_set("include_path", $include_path);
+	
+	return true;
+}
