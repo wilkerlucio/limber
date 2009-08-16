@@ -150,9 +150,7 @@ class MockAdapter extends Base
 	}
 	
 	protected function _close() {}
-	protected function _create_table($table_name, $fields_description) {}
-	protected function _drop_table($table_name) {}
-	protected function _describe_table($table_name) {}
+	protected function _table_fields($table_name) {}
 	protected function _execute($sql) {}
 	protected function _select($sql)
 	{

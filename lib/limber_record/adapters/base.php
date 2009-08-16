@@ -219,6 +219,18 @@ abstract class Base
 		return $this->_transaction_rollback();
 	}
 	
+	/**
+	 * Get field names of the table
+	 *
+	 * @see _table_fields
+	 */
+	public function table_fields($table_name)
+	{
+		$this->force_connection();
+		
+		return $this->_table_fields($table_name);
+	}
+	
 	//connection methods
 	/**
 	 * Connect to database
@@ -256,9 +268,7 @@ abstract class Base
 	protected abstract function _close();
 	
 	//scheme methods
-	protected abstract function _create_table($table_name, $fields_description);
-	protected abstract function _drop_table($table_name);
-	protected abstract function _describe_table($table_name);
+	protected abstract function _table_fields($table_name);
 	
 	//common methods
 	/**

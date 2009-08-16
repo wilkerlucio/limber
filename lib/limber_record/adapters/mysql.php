@@ -26,7 +26,7 @@ class Mysql extends Base
 		"primary_key" => "int(11) DEFAULT NULL auto_increment PRIMARY KEY",
 		"string"      => array("name" => "varchar", "limit" => 255),
 		"text"        => array("name" => "text"),
-		"integer"     => array("name" => "int", "limit" => 4),
+		"integer"     => array("name" => "int", "limit" => 11),
 		"float"       => array("name" => "float"),
 		"decimal"     => array("name" => "decimal"),
 		"datetime"    => array("name" => "datetime"),
@@ -97,9 +97,15 @@ class Mysql extends Base
 		return @mysql_affected_rows($this->id);
 	}
 	
-	protected function _create_table($table_name, $fields_description) {}
-	protected function _drop_table($table_name) {}
-	protected function _describe_table($table_name) {}
+	protected function _table_fields($table_name)
+	{
+		$table_name = $this->quote_table_name($table_name);
+		$data = $this->select("SHOW FIELDS FROM " . $table_name);
+		
+		return array_map(function($row) {
+			return $row["Field"];
+		}, $data);
+	}
 	
 	protected function _transaction_begin()
 	{

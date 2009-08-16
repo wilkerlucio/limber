@@ -134,4 +134,16 @@ describe("Mysql Adapter", function($spec) {
 			$spec($data->adapter->quote_table_name('mytable.column'))->should->be('`mytable`.`column`');
 		});
 	});
+	
+	$spec->context("getting table scheme", function($spec) {
+		$spec->before_all(function($data) {
+			$data->adapter = new Mysql();
+			$data->adapter->connect("localhost", "root", "");
+			$data->adapter->select_db("limber_record");
+		});
+		
+		$spec->it("should get the columns of table", function($spec, $data) {
+			$spec($data->adapter->table_fields("cars"))->should->be(array("id", "name", "year", "color"));
+		});
+	});
 });
