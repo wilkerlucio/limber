@@ -113,6 +113,33 @@ abstract class DynamicObject
 {
 	public $_instance_methods = array();
 	
+	public static function extend($classname)
+	{
+		$reflection = new \ReflectionClass($classname);
+		$methods = $reflection->getMethods();
+		
+		foreach ($methods as $method) {
+			if (!$method->isPublic() || $method->isAbstract()) continue;
+			
+			$method_name = $method->getName();
+			
+			if ($method->isStatic()) {
+				static::define_static_method($method_name, function () use ($classname, $method_name) {
+					$args = func_get_args();
+					
+					return call_user_func_array(array($classname, $method_name), $args);
+				});
+			} else {
+				static::define_method($method_name, function () use ($classname, $method_name) {
+					$obj = new $classname();
+					$args = func_get_args();
+					
+					return call_user_func_array(array($classname, $method_name), $args);
+				});
+			}
+		}
+	}
+	
 	public function define_instance_method($method_name, $callback)
 	{
 		$this->_instance_methods[$method_name] = $callback;

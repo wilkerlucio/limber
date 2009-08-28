@@ -60,6 +60,31 @@ class DynamicObjectTest extends DynamicObject
 	}
 }
 
+class DynamicModuleTest
+{
+	public function module_instance($obj)
+	{
+		return "from instance";
+	}
+	
+	public function module_instance_mod_var($obj, $value)
+	{
+		$obj->n = $value;
+	}
+	
+	public static function module_static($class)
+	{
+		return "static from {$class}";
+	}
+	
+	public static function module_static_with_args($class, $arg)
+	{
+		return "with {$arg} argument";
+	}
+}
+
+DynamicObjectTest::extend("LimberSupport\DynamicModuleTest");
+
 DynamicObjectTest::attr_accessor("variable");
 
 DynamicObjectTest::define_getter("internal");
@@ -255,6 +280,29 @@ describe("Dynamic Object", function($spec) {
 			} catch(CallerNotFoundException $e) {
 				$spec(true)->should->be(true);
 			}
+		});
+	});
+	
+	$spec->context("extending object with another one (used as module)", function ($spec) {
+		$spec->it("should has the instance methods defined", function ($spec, $data) {
+			$obj = new DynamicObjectTest();
+			
+			$spec($obj->module_instance())->should->be("from instance");
+		});
+		
+		$spec->it("should has the instance methods that modify object variables", function ($spec, $data) {
+			$obj = new DynamicObjectTest();
+			$obj->module_instance_mod_var(3);
+
+			$spec($obj->n)->should->be(3);
+		});
+
+		$spec->it("should has the static methods defined", function ($spec, $data) {
+			$spec(DynamicObjectTest::module_static())->should->be("static from LimberSupport\DynamicObjectTest");
+		});
+
+		$spec->it("should work with static methods with args", function ($spec, $data) {
+			$spec(DynamicObjectTest::module_static_with_args(3))->should->be("with 3 argument");
 		});
 	});
 });
