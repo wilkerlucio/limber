@@ -81,7 +81,7 @@ class Manager
 			if ($connection->alive()) return $connection;
 		}
 		
-		return null;
+		throw new ManagerException("There is no connection alive");
 	}
 	
 	/**
@@ -142,3 +142,4 @@ class Manager
 }
 
 class InvalidAdapterException extends \Exception {}
+class ManagerException extends \Exception {}
