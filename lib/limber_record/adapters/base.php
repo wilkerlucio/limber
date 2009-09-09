@@ -46,6 +46,16 @@ abstract class Base
 	
 	private $connected;
 	
+	/**
+	 * Check if the connection is alive
+	 *
+	 * @return boolean
+	 */
+	public function alive()
+	{
+		return true;
+	}
+	
 	//delay connection methods
 	/**
 	 * Connect to database
