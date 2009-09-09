@@ -136,6 +136,8 @@ class Mysql extends Base
 	//quoting
 	public function quote_string($string)
 	{
+		$this->force_connection();
+		
 		return "'" . mysql_real_escape_string($string, $this->id) . "'";
 	}
 	
