@@ -20,6 +20,40 @@ namespace LimberRecord;
 
 class Base extends \LimberSupport\DynamicObject
 {
+	public $persistent;
+	public $attributes = array();
+	
+	public function __construct($data = array())
+	{
+		$this->persistent = false;
+		$this->initialize_attributes();
+		$this->fill($data);
+	}
+	
+	/**
+	 * Get current connection in use
+	 *
+	 * @return LimberRecord\Adapters\Base
+	 */
+	public static function connection()
+	{
+		$con = Manager::instance()->connection();
+		
+		return $con;
+	}
+	
+	/**
+	 * Setup the attributes with blank values
+	 */
+	public function initialize_attributes()
+	{
+		$fields = static::table_fields();
+		
+		foreach ($fields as $field) {
+			$this->attributes[$field] = null;
+		}
+	}
+	
 	/**
 	 * Get current class name
 	 *
@@ -74,6 +108,26 @@ class Base extends \LimberSupport\DynamicObject
 	}
 	
 	/**
+	 * Get fields for the table of current model
+	 *
+	 * This method simple gets the list with fields of table and cache the
+	 * result for the next requests
+	 *
+	 * @return array
+	 */
+	public static function table_fields()
+	{
+		$fields = static::get_static_data("table_fields");
+		
+		if (!$fields) {
+			$con = static::connection();
+			$fields = $con->table_fields(static::table_name());
+		}
+		
+		return $fields;
+	}
+	
+	/**
 	 * Get the primary key field of current table
 	 *
 	 * By default the name of primary key field will be aways 'id', you can change
@@ -89,4 +143,255 @@ class Base extends \LimberSupport\DynamicObject
 		
 		return static::get_static_data("primary_key_field", "id");
 	}
+	
+	/**
+	 * Fill the object with given data
+	 *
+	 * This is a simple loop setting the values for the object
+	 * If you pass $raw as true, the values will be setted exactly as you
+	 * give them (without going to virtual attributes or other possible
+	 * transformations)
+	 *
+	 * @param array $data associative array containing data
+	 * @param boolean $raw use true for raw attributes set
+	 */
+	public function fill($data, $raw = false)
+	{
+		foreach ($data as $key => $value) {
+			if ($raw) {
+				$this->write_attribute($key, $value);
+			} else {
+				$this->$key = $value;
+			}
+		}
+	}
+	
+	/**
+	 * Raw read attribute of object
+	 *
+	 * @param string $name
+	 * @return string
+	 */
+	public function read_attribute($name)
+	{
+		return $this->attributes[$name];
+	}
+	
+	/**
+	 * Raw write attribute of object
+	 *
+	 * @param string $name
+	 * @param string $value
+	 */
+	public function write_attribute($name, $value)
+	{
+		$this->attributes[$name] = $value;
+	}
+	
+	/**
+	 * Retrive items from database
+	 */
+	public static function find($what, $options = array())
+	{
+		$options = array_merge(array(
+			"select"     => static::table_name() . ".*",
+			"from"       => static::table_name(),
+			"joins"      => null,
+			"conditions" => null,
+			"groupby"    => null,
+			"order"      => null,
+			"limit"      => null,
+			"offset"     => null
+		), $options);
+		
+		return static::find_from_ids($what, $options);
+	}
+	
+	public static function find_every($options)
+	{
+		return static::find_by_sql(static::construct_sql_finder($options));
+	}
+	
+	public static function find_initial($options)
+	{
+		$data = static::find_every($options);
+		
+		return $data->first;
+	}
+	
+	public static function find_from_ids($ids, $options)
+	{
+		$con = static::connection();
+		$pk = static::primary_key_field();
+		
+		if (is_array($ids)) {
+			$options["conditions"] = $con->quote_table_name($pk) . " in (" . implode(",", static::sanitize_array($ids)) . ")";
+			
+			return static::find_every($options);
+		} else {
+			$options["conditions"] = $con->quote_table_name($pk) . " = " . static::sanitize($ids);
+			
+			return static::find_initial($options);
+		}
+	}
+	
+	public static function find_by_sql($sql)
+	{
+		$con = static::connection();
+		$data = $con->select($sql);
+		$data = array_map(array(static::class_name(), "map_object"), $data);
+		
+		$collection = new Collection();
+		
+		foreach ($data as $object) {
+			$object->persistent = true;
+			$collection->push($object);
+		}
+		
+		return $collection;
+	}
+	
+	public static function map_object($data)
+	{
+		$object = new static;
+		$object->fill($data, true);
+		
+		return $object;
+	}
+	
+	public static function construct_sql_finder($options)
+	{
+		$con = static::connection();
+		
+		$sql  = "SELECT {$options['select']} ";
+		$sql .= "FROM " . $con->quote_table_name($options['from']) . " ";
+
+		static::add_joins($sql, $options['joins']);
+		static::add_conditions($sql, $options['conditions']);
+		static::add_groupby($sql, $options['groupby']);
+		static::add_order($sql, $options['order']);
+		static::add_limit($sql, $options['limit'], $options['offset']);
+
+		return $sql;
+	}
+	
+	public static function add_joins(&$sql, $joins)
+	{
+		$sql .= $joins . " ";
+	}
+	
+	public static function add_conditions(&$sql, $conditions)
+	{
+		if (!$conditions) return;
+		
+		$sql .= 'WHERE ' . static::build_conditions($conditions) . ' ';
+	}
+	
+	public static function build_conditions($conditions)
+	{
+		$con = static::connection();
+
+		$sql = '';
+		
+		if (is_array($conditions)) {
+			if (array_keys($conditions) === range(0, count($conditions) - 1)) {
+				$query = array_shift($conditions);
+				
+				for($i = 0; $i < strlen($query); $i++) {
+					if ($query[$i] == '?') {
+						if (count($conditions) == 0) {
+							throw new QueryMismatchParamsException('The number of question marks is more than provided params');
+						}
+						
+						$sql .= static::prepare_for_value(array_shift($conditions));
+					} else {
+						$sql .= $query[$i];
+					}
+				}
+			} else {
+				$factors = array();
+				
+				foreach ($conditions as $key => $value) {
+					$matches = array();
+					
+					if (preg_match("/([a-z_].*?)\s*((?:[><!=\s]|LIKE|IS|NOT)+)/i", $key, $matches)) {
+						$key  = $matches[1];
+						$op   = strtoupper($matches[2]);
+					} else {
+						if ($value === null) {
+							$op = 'IS';
+						} elseif (is_array($value)) {
+							$op = 'IN';
+						} else {
+							$op = "=";
+						}
+					}
+					
+					$value = static::prepare_for_value($value);
+					
+					$factors[] = "`$key` $op $value";
+				}
+				
+				$sql .= implode(" AND ", $factors);
+			}
+		} else {
+			$sql .= $conditions;
+		}
+		
+		return $sql;
+	}
+	
+	public static function add_groupby(&$sql, $order)
+	{
+		if ($order) {
+			$sql .= "GROUP BY $order ";
+		}
+	}
+	
+	public static function add_order(&$sql, $order)
+	{
+		if ($order) {
+			$sql .= "ORDER BY $order ";
+		}
+	}
+	
+	public static function add_limit(&$sql, $limit, $offset)
+	{
+		if ($limit) {
+			if ($offset !== false) {
+				$sql .= "LIMIT $offset, $limit ";
+			} else {
+				$sql .= "LIMIT $limit ";
+			}
+		}
+	}
+	
+	public static function prepare_for_value($value)
+	{
+		$value = static::sanitize($value);
+		
+		return is_array($value) ? "($value)" : $value;
+	}
+	
+	public static function sanitize($item)
+	{
+		$con = static::connection();
+		
+		return $con->quote($item);
+	}
+	
+	public static function sanitize_array($array)
+	{
+		return array_map(array(static::class_name(), "sanitize"), $array);
+	}
 }
+
+Base::define_getter(function($object, $attribute) {
+	if (isset($object->attributes[$attribute])) {
+		return $object->attributes[$attribute];
+	}
+	
+	throw new CallerContinueException();
+});
+
+class QueryMismatchParamsException extends \Exception {}
