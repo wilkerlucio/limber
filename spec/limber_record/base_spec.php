@@ -129,6 +129,10 @@ describe("LimberRecord Base", function($spec) {
 				$spec(@get_class($people))->should->be("LimberRecord\\Collection");
 			});
 			
+			$spec->it("should retrieve the correct length of records", function($spec, $data) {
+				$spec(Person::find("all")->count)->should->be(3);
+			});
+			
 			$spec->it("should find the first item from database", function($spec, $data) {
 				$person = Person::find("first");
 				
