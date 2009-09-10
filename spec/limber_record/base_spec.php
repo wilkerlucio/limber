@@ -18,34 +18,44 @@
 
 require_once "limber_record.php";
 
-//database data
-$host = "localhost";
-$user = "root";
-$password = "";
-$database = "limber_record";
-
-//setup connection
-$con = LimberRecord\Manager::instance()->connect("mysql", $host, $user, $password, $database);
-
-//setup database
-$con->update("DROP TABLE IF EXISTS `people`");
-$con->update("CREATE TABLE `people` (
-	id int(11) not null auto_increment,
-	name varchar(255),
-	email varchar(255),
-	created_at datetime,
-	updated_at datetime,
-	primary key(id)
-)");
-
-$con->insert("INSERT INTO people values (1, 'Wilker', 'wilkerlucio@provider.com', '2009-06-20 20:30:42', '2009-06-20 20:30:42')");
-$con->insert("INSERT INTO people values (2, 'Paul', 'paul@provider.com', '2009-06-20 20:42:30', '2009-06-20 20:42:30')");
-$con->insert("INSERT INTO people values (3, 'Mary', 'mary@provider.com', '2009-06-20 21:30:42', '2009-06-20 21:30:42')");
-
-//require models
-require_dir(__DIR__ . "/models");
-
 describe("LimberRecord Base", function($spec) {
+	$spec->before_all(function () {
+		//setup database
+		$db = mysql_connect("localhost", "root", "");
+		mysql_query("DROP DATABASE IF EXISTS `limber_record`", $db);
+		mysql_query("CREATE DATABASE `limber_record`", $db);
+		mysql_select_db("limber_record", $db);
+
+		//create tables and data
+		mysql_query("CREATE TABLE `people` (
+			id int(11) not null auto_increment,
+			name varchar(255),
+			email varchar(255),
+			created_at datetime,
+			updated_at datetime,
+			primary key(id)
+		) type=innodb");
+
+		mysql_query("INSERT INTO people values (1, 'Wilker', 'wilkerlucio@provider.com', '2009-06-20 20:30:42', '2009-06-20 20:30:42')");
+		mysql_query("INSERT INTO people values (2, 'Paul', 'paul@provider.com', '2009-06-20 20:42:30', '2009-06-20 20:42:30')");
+		mysql_query("INSERT INTO people values (3, 'Mary', 'mary@provider.com', '2009-06-20 21:30:42', '2009-06-20 21:30:42')");
+
+		//closes connection
+		mysql_close($db);
+		
+		//database data
+		$host = "localhost";
+		$user = "root";
+		$password = "";
+		$database = "limber_record";
+
+		//setup connection
+		LimberRecord\Manager::instance()->connect("mysql", $host, $user, $password, $database);
+
+		//require models
+		require_dir(__DIR__ . "/models");
+	});
+	
 	$spec->context("getting table name", function($spec) {
 		$spec->it("should return the pluralized name of model by default", function($spec) {
 			$spec(Person::table_name())->should->be("people");

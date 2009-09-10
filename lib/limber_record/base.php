@@ -193,16 +193,27 @@ class Base extends \LimberSupport\DynamicObject
 	 */
 	public static function find($what, $options = array())
 	{
+		$con = static::connection();
+		
 		$options = array_merge(array(
 			"select"     => static::table_name() . ".*",
 			"from"       => static::table_name(),
 			"joins"      => null,
 			"conditions" => null,
 			"groupby"    => null,
-			"order"      => null,
+			"order"      => $con->quote_table_name(static::table_name() . "." . static::primary_key_field()) . " asc",
 			"limit"      => null,
 			"offset"     => null
 		), $options);
+		
+		switch ($what) {
+			case 'all':
+				return static::find_every($options);
+			case 'first':
+				return static::find_initial($options);
+			case 'last':
+				return static::find_last($options);
+		}
 		
 		return static::find_from_ids($what, $options);
 	}
@@ -217,6 +228,15 @@ class Base extends \LimberSupport\DynamicObject
 		$data = static::find_every($options);
 		
 		return $data->first;
+	}
+	
+	public static function find_last($options)
+	{
+		if ($options['order']) {
+			$options['order'] = static::reverse_sql_order($options['order']);
+		}
+
+		return static::find_initial($options);
 	}
 	
 	public static function find_from_ids($ids, $options)
@@ -339,6 +359,25 @@ class Base extends \LimberSupport\DynamicObject
 		}
 		
 		return $sql;
+	}
+	
+	public static function reverse_sql_order($order)
+	{
+		$reversed = explode(',', $order);
+		
+		foreach ($reversed as $k => $rev) {
+			if (preg_match('/\s(asc|ASC)$/', $rev)) {
+				$rev = preg_replace('/\s(asc|ASC)$/', ' DESC', $rev);
+			} elseif (preg_match('/\s(desc|DESC)$/', $rev)) {
+				$rev = preg_replace('/\s(desc|DESC)$/', ' ASC', $rev);
+			} elseif (!preg_match('/\s(acs|ASC|desc|DESC)$/', $rev)) {
+				$rev .= " DESC";
+			}
+			
+			$reversed[$k] = $rev;
+		}
+		
+		return implode(',', $reversed);
 	}
 	
 	public static function add_groupby(&$sql, $order)
