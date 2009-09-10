@@ -208,4 +208,67 @@ class ArrayObject extends DynamicObject implements \ArrayAccess, \Countable, \It
 		
 		return $this;
 	}
+	
+	/**
+	 * Make a new ArrayObject with the pluck data of object
+	 *
+	 * @see array_pluck
+	 * @param string $attribute
+	 * @return ArrayObject
+	 */
+	public function pluck($attribute)
+	{
+		$obj = clone $this;
+		$obj->pluck_self($attribute);
+		
+		return $obj;
+	}
+	
+	/**
+	 * Pluck an attribute of objects into array
+	 *
+	 * @see array_pluck
+	 * @param string $attribute
+	 * @return ArrayObject
+	 */
+	public function pluck_self($attribute)
+	{
+		$this->data = array_pluck($this->data, $attribute);
+		
+		return $this;
+	}
+	
+	/**
+	 * Make a new ArrayObject with the invoked data of objects
+	 *
+	 * @see array_invoke
+	 * @param string $method
+	 * @return ArrayObject
+	 */
+	public function invoke($method)
+	{
+		$args = func_get_args();
+		
+		$obj = clone $this;
+		call_user_func_array(array($obj, "invoke_self"), $args);
+		
+		return $obj;
+	}
+	
+	/**
+	 * Pluck an attribute of objects into array
+	 *
+	 * @see array_pluck
+	 * @param string $attribute
+	 * @return ArrayObject
+	 */
+	public function invoke_self()
+	{
+		$args = func_get_args();
+		array_unshift($args, $this->data);
+		
+		$this->data = call_user_func_array("array_invoke", $args);
+		
+		return $this;
+	}
 }
