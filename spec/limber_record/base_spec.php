@@ -108,6 +108,12 @@ describe("LimberRecord Base", function($spec) {
 				$spec(LimberRecord\Base::build_conditions($conditions))->should->be("some = 'value' and value != 1 or some > 203");
 			});
 			
+			$spec->it("should use associative replacements to quote values", function($spec, $data) {
+				$conditions = array("some = :some and value != :value or some > :some", array("some" => "Some", "value" => true));
+				
+				$spec(LimberRecord\Base::build_conditions($conditions))->should->be("some = 'Some' and value != 1 or some > 'Some'");
+			});
+			
 			$spec->it("should should use associative arrays and quote columns and values", function($spec, $data) {
 				$conditions = array("name" => "Some", "age >" => 30);
 				

@@ -317,15 +317,25 @@ class Base extends \LimberSupport\DynamicObject
 			if (array_keys($conditions) === range(0, count($conditions) - 1)) {
 				$query = array_shift($conditions);
 				
-				for($i = 0; $i < strlen($query); $i++) {
-					if ($query[$i] == '?') {
-						if (count($conditions) == 0) {
-							throw new QueryMismatchParamsException('The number of question marks is more than provided params');
-						}
+				if (is_array($conditions[0])) {
+					$conditions = array_map(array('static', 'prepare_for_value'), $conditions[0]);
+					
+					$sql .= preg_replace_callback("/:(\w+)/", function($matches) use ($conditions) {
+						$value = $conditions[$matches[1]];
 						
-						$sql .= static::prepare_for_value(array_shift($conditions));
-					} else {
-						$sql .= $query[$i];
+						return $value;
+					}, $query);
+				} else {
+					for($i = 0; $i < strlen($query); $i++) {
+						if ($query[$i] == '?') {
+							if (count($conditions) == 0) {
+								throw new QueryMismatchParamsException('The number of question marks is more than provided params');
+							}
+							
+							$sql .= static::prepare_for_value(array_shift($conditions));
+						} else {
+							$sql .= $query[$i];
+						}
 					}
 				}
 			} else {
