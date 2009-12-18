@@ -318,7 +318,7 @@ class Base extends \LimberSupport\DynamicObject
 				$query = array_shift($conditions);
 				
 				if (is_array($conditions[0])) {
-					$conditions = array_map(array('static', 'prepare_for_value'), $conditions[0]);
+					$conditions = array_map(array(static::class_name(), 'prepare_for_value'), $conditions[0]);
 					
 					$sql .= preg_replace_callback("/:(\w+)/", function($matches) use ($conditions) {
 						$value = $conditions[$matches[1]];
@@ -417,9 +417,9 @@ class Base extends \LimberSupport\DynamicObject
 	
 	public static function prepare_for_value($value)
 	{
-		$value = static::sanitize($value);
+		$quoted = static::sanitize($value);
 		
-		return is_array($value) ? "($value)" : $value;
+		return is_array($value) ? "($quoted)" : $quoted;
 	}
 	
 	public static function sanitize($item)

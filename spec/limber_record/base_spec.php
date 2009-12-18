@@ -115,9 +115,9 @@ describe("LimberRecord Base", function($spec) {
 			});
 			
 			$spec->it("should should use associative arrays and quote columns and values", function($spec, $data) {
-				$conditions = array("name" => "Some", "age >" => 30);
+				$conditions = array("name" => array("one", "another"), "age >" => 30, );
 				
-				$spec(LimberRecord\Base::build_conditions($conditions))->should->be("`name` = 'Some' AND `age` > 30");
+				$spec(LimberRecord\Base::build_conditions($conditions))->should->be("`name` IN ('one','another') AND `age` > 30");
 			});
 		});
 		
