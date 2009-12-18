@@ -89,7 +89,7 @@ function path_autoloader($path, $autoregister = true)
 	$path = rtrim($path, "\\/");
 	
 	$fn = function($classname) use ($path) {
-		$classpath = explode('_', $classname);
+		$classpath = explode('\\', $classname);
 		$classpath = array_map("str_underscore", $classpath);
 		$classpath = implode("/", $classpath);
 		

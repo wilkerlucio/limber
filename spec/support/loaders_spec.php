@@ -33,7 +33,7 @@ describe("Loaders support", function($spec) {
 		$spec->it("should load nested class", function($spec, $data) {
 			$loader = $data->loader;
 			
-			$spec($loader("Package_OtherDummy"))->should->be(true);
+			$spec($loader("Package\\OtherDummy"))->should->be(true);
 		});
 	});
 	
@@ -41,7 +41,7 @@ describe("Loaders support", function($spec) {
 		$spec->it("should load all classes into nested directories", function($spec, $data) {
 			require_dir(dirname(__FILE__) . '/loaders_dummy_classes');
 			
-			$spec(class_exists("Package_Sub_MoreDummy"))->should->be(true);
+			$spec(class_exists("Package\\Sub\\MoreDummy"))->should->be(true);
 		});
 	});
 	

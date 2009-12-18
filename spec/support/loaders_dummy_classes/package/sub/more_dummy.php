@@ -16,4 +16,6 @@
  * limitations under the License. 
  */
 
-class Package_Sub_MoreDummy {}
+namespace Package\Sub;
+
+class MoreDummy {}

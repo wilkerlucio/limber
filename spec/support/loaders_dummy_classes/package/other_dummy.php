@@ -16,4 +16,6 @@
  * limitations under the License. 
  */
 
-class Package_OtherDummy {}
+namespace Package;
+
+class OtherDummy {}
