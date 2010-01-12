@@ -145,6 +145,26 @@ class Base extends \LimberSupport\DynamicObject
 	}
 	
 	/**
+	 * Get the primary key value of this record
+	 *
+	 * @return string the primary key value for current record
+	 */
+	public function primary_key_value()
+	{
+		$pk = static::primary_key_field();
+		
+		return $this->$pk;
+	}
+	
+	/**
+	 * Alias for primary_key_value()
+	 */
+	public function get_id()
+	{
+		return $this->primary_key_value();
+	}
+	
+	/**
 	 * Fill the object with given data
 	 *
 	 * This is a simple loop setting the values for the object
@@ -193,18 +213,7 @@ class Base extends \LimberSupport\DynamicObject
 	 */
 	public static function find($what, $options = array())
 	{
-		$con = static::connection();
-		
-		$options = array_merge(array(
-			"select"     => static::table_name() . ".*",
-			"from"       => static::table_name(),
-			"joins"      => null,
-			"conditions" => null,
-			"groupby"    => null,
-			"order"      => $con->quote_table_name(static::table_name() . "." . static::primary_key_field()) . " asc",
-			"limit"      => null,
-			"offset"     => null
-		), $options);
+		$options = array_merge(static::default_find_options(), $options);
 		
 		switch ($what) {
 			case 'all':
@@ -216,6 +225,22 @@ class Base extends \LimberSupport\DynamicObject
 		}
 		
 		return static::find_from_ids($what, $options);
+	}
+	
+	public static function default_find_options()
+	{
+		$con = static::connection();
+
+		return array(
+			"select"     => static::table_name() . ".*",
+			"from"       => static::table_name(),
+			"joins"      => null,
+			"conditions" => null,
+			"groupby"    => null,
+			"order"      => $con->quote_table_name(static::table_name() . "." . static::primary_key_field()) . " asc",
+			"limit"      => null,
+			"offset"     => null
+		);
 	}
 		
 	public static function all()
@@ -284,6 +309,14 @@ class Base extends \LimberSupport\DynamicObject
 		$con = static::connection();
 		
 		return $con->select($sql);
+	}
+	
+	public static function count()
+	{
+		$con = static::connection();
+		$table_name = $con->quote_table_name(static::table_name());
+		
+		return (int) $con->select_cell("select count(*) from $table_name");
 	}
 	
 	public static function find_by_sql($sql)
@@ -389,7 +422,7 @@ class Base extends \LimberSupport\DynamicObject
 					
 					$value = static::prepare_for_value($value);
 					
-					$factors[] = "`$key` $op $value";
+					$factors[] = $con->quote_column_name($key) . " $op $value";
 				}
 				
 				$sql .= implode(" AND ", $factors);
@@ -463,14 +496,93 @@ class Base extends \LimberSupport\DynamicObject
 	{
 		return array_map(array(static::class_name(), "sanitize"), $array);
 	}
+	
+	public function save()
+	{
+		return $this->create_or_update();
+	}
+	
+	public function create_or_update()
+	{
+		if ($this->persistent) {
+			$this->update();
+		} else {
+			$this->create();
+		}
+		
+		return $this;
+	}
+	
+	public function create()
+	{
+		$con = static::connection();
+		$pk = static::primary_key_field();
+		$table = $con->quote_table_name($this->table_name());
+		$fields = $this->attributes;
+		
+		$sql_fields = implode(",", array_map(array($con, "quote_column_name"), array_keys($fields)));
+		$sql_values = implode(",", array_map(array($this, 'prepare_for_value'), $fields));
+		
+		$sql = "INSERT INTO $table ($sql_fields) VALUES ($sql_values);";
+		
+		$this->$pk = $con->insert($sql);
+		$this->persistent = true;
+		
+		return $this;
+	}
+	
+	public function update()
+	{
+		$con = static::connection();
+		
+		$pk = static::primary_key_field();
+		$pk_value = static::sanitize($this->id);
+		$table = static::table_name();
+		$fields = $this->attributes;
+		
+		$sql_set = array();
+		
+		foreach ($fields as $key => $value) {
+			$sql_set[] = $con->quote_column_name($key) . " = " . $this->prepare_for_value($value);
+		}
+		
+		$sql_set = implode(",", $sql_set);
+		
+		$sql = "UPDATE " . $con->quote_table_name($table) . " SET $sql_set WHERE " . $con->quote_column_name($pk) . " = $pk_value;";
+		
+		$con->update($sql);
+		
+		return $this;
+	}
+	
+	public function toString() {
+		$base = "LimberRecord::Base::" . get_class($this);
+		
+		if ($this->persistent) {
+			$pk = $this->primary_key_value();
+			$base .= "($pk)";
+		}
+		
+		return $base;
+	}
 }
 
 Base::define_getter(function($object, $attribute) {
-	if (isset($object->attributes[$attribute])) {
+	if (array_key_exists($attribute, $object->attributes)) {
 		return $object->attributes[$attribute];
 	}
 	
-	throw new CallerContinueException();
+	throw new \LimberSupport\CallerContinueException();
+});
+
+Base::define_setter(function($object, $attribute, $value) {
+	if (array_key_exists($attribute, $object->attributes)) {
+		$object->attributes[$attribute] = $value;
+		
+		return $object;
+	}
+	
+	throw new \LimberSupport\CallerContinueException();
 });
 
 class QueryMismatchParamsException extends \Exception {}

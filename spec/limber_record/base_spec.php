@@ -121,6 +121,12 @@ describe("LimberRecord Base", function($spec) {
 			});
 		});
 		
+		$spec->context("getting the number of records", function($spec) {
+			$spec->it("should get the number of records in table", function($spec, $data) {
+				$spec(Person::count())->should->be(3);
+			});
+		});
+		
 		$spec->context("using select_all method", function($spec) {
 			$spec->it("should return all records", function($spec, $data) {
 				$people = Person::select_all("select * from people");
@@ -177,6 +183,41 @@ describe("LimberRecord Base", function($spec) {
 				$person = Person::last();
 				
 				$spec($person->name)->should->be("Mary");
+			});
+		});
+	});
+	
+	$spec->context("saving records into database", function($spec) {
+		$spec->context("saving new records", function($spec) {
+			$spec->it("should save a new record into database", function($spec, $data) {
+				$person = new Person();
+				$person->name = "John";
+				$person->email = "john@limbercode.com.br";
+				$person->save();
+				
+				$spec($person->id)->should->be('4');
+				$spec(Person::last()->name)->should->be("John");
+			});
+		});
+		
+		$spec->context("updating records", function($spec) {
+			$spec->it("should update the record of database", function($spec, $data) {
+				$person = Person::last();
+				$count = Person::count();
+				$id = $person->id;
+				
+				$person->name = "Zeth";
+				$person->save();
+				
+				$spec(Person::count())->should->be($count);
+				$spec($person->id)->should->be($id);
+				$spec(Person::find($id)->name)->should->be("Zeth");
+			});
+		});
+		
+		$spec->context("removing records", function($spec) {
+			$spec->it("should destroy the record from database", function($spec, $data) {
+				
 			});
 		});
 	});
