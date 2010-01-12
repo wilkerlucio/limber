@@ -217,6 +217,30 @@ class Base extends \LimberSupport\DynamicObject
 		
 		return static::find_from_ids($what, $options);
 	}
+		
+	public static function all()
+	{
+		$args = func_get_args();
+		array_unshift($args, "all");
+		
+		return call_user_func_array(array("static", "find"), $args);
+	}
+				
+	public static function first()
+	{
+		$args = func_get_args();
+		array_unshift($args, "first");
+		
+		return call_user_func_array(array("static", "find"), $args);
+	}
+	
+	public static function last()
+	{
+		$args = func_get_args();
+		array_unshift($args, "last");
+		
+		return call_user_func_array(array("static", "find"), $args);
+	}
 	
 	public static function find_every($options)
 	{
@@ -255,10 +279,16 @@ class Base extends \LimberSupport\DynamicObject
 		}
 	}
 	
-	public static function find_by_sql($sql)
+	public static function select_all($sql)
 	{
 		$con = static::connection();
-		$data = $con->select($sql);
+		
+		return $con->select($sql);
+	}
+	
+	public static function find_by_sql($sql)
+	{
+		$data = static::select_all($sql);
 		$data = array_map(array(static::class_name(), "map_object"), $data);
 		
 		$collection = new Collection();

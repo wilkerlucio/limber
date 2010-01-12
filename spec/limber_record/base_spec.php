@@ -121,6 +121,14 @@ describe("LimberRecord Base", function($spec) {
 			});
 		});
 		
+		$spec->context("using select_all method", function($spec) {
+			$spec->it("should return all records", function($spec, $data) {
+				$people = Person::select_all("select * from people");
+				
+				$spec($people[0]["name"])->should->be("Wilker");
+			});
+		});
+		
 		$spec->context("using find method", function($spec) {
 			$spec->it("should read a record by id", function($spec, $data) {
 				$person = Person::find(2);
@@ -129,7 +137,7 @@ describe("LimberRecord Base", function($spec) {
 				$spec($person->email)->should->be("paul@provider.com");
 			});
 			
-			$spec->it("should read all records from database", function($spec, $data) {
+			$spec->it("should read all records from database and returns a LimberRecord\\Collection", function($spec, $data) {
 				$people = Person::find("all");
 				
 				$spec(@get_class($people))->should->be("LimberRecord\\Collection");
@@ -153,9 +161,23 @@ describe("LimberRecord Base", function($spec) {
 		});
 		
 		$spec->context("using helper methods", function($spec) {
-			$spec->it("should return all items");
-			$spec->it("should return the first item from database");
-			$spec->it("should return the last item from database");
+			$spec->it("should return all items", function ($spec, $data) {
+				$people = Person::all();
+				
+				$spec(@get_class($people))->should->be("LimberRecord\\Collection");
+			});
+			
+			$spec->it("should return the first item from database", function ($spec, $data) {
+				$person = Person::first(array("conditions" => "id = 2"));
+				
+				$spec($person->name)->should->be("Paul");
+			});
+			
+			$spec->it("should return the last item from database", function ($spec, $data) {
+				$person = Person::last();
+				
+				$spec($person->name)->should->be("Mary");
+			});
 		});
 	});
 });
