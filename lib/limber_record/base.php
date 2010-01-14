@@ -232,7 +232,7 @@ class Base extends \LimberSupport\DynamicObject
 		$con = static::connection();
 
 		return array(
-			"select"     => static::table_name() . ".*",
+			"select"     => $con->quote_table_name(static::table_name()) . ".*",
 			"from"       => static::table_name(),
 			"joins"      => null,
 			"conditions" => null,
