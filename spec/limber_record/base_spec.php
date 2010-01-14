@@ -217,7 +217,10 @@ describe("LimberRecord Base", function($spec) {
 		
 		$spec->context("removing records", function($spec) {
 			$spec->it("should destroy the record from database", function($spec, $data) {
+				$count = Person::count();
+				Person::last()->destroy();
 				
+				$spec(Person::count())->should->be($count - 1);
 			});
 		});
 	});

@@ -555,6 +555,28 @@ class Base extends \LimberSupport\DynamicObject
 		return $this;
 	}
 	
+	public function destroy()
+	{
+		//check if record exists before delete
+		if (!$this->persistent) {
+			return false;
+		}
+		
+		$con = static::connection();
+		
+		$pk     = static::primary_key_field();
+		$pk_val = static::prepare_for_value($this->$pk);
+		$table  = $con->quote_table_name($this->table_name());
+		
+		$sql = "DELETE FROM $table WHERE " . $con->quote_column_name($pk) . " = $pk_val";
+		
+		$con->update($sql);
+		
+		$this->persistent = false;
+		
+		return true;
+	}
+	
 	public function toString() {
 		$base = "LimberRecord::Base::" . get_class($this);
 		
