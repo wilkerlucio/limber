@@ -26,8 +26,6 @@ class Route extends \LimberSupport\DynamicObject
 	public $_options;
 	
 	public $_assigned;
-	public $_controller;
-	public $_action;
 	public $_params;
 	
 	public function __construct($route, $options = array())
