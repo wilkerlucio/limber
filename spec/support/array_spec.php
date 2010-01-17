@@ -195,4 +195,22 @@ describe("Array Support", function($spec) {
 			$spec(array_find($data->data, function($i) { return ($i % 2) == 0;}))->should->be(2);
 		});
 	});
+	
+	$spec->context("finding many elements", function($spec) {
+		$spec->before_each(function($data) {
+			$data->data = array(1, 2, 3, 4, 5);
+		});
+		
+		$spec->it("should return and empty array if no element was found", function($spec, $data) {
+			$spec(array_find_all($data->data, function($i) { return $i > 6; }))->should->be(array());
+		});
+		
+		$spec->it("should find using a comparation function", function($spec, $data) {
+			$spec(array_find_all($data->data, function($i) { return ($i % 2) == 0;}))->should->be(array(2, 4));
+		});
+		
+		$spec->it("should find positives if no iterator", function($spec, $data) {
+			$spec(array_find_all(array(1, 0, null, true)))->should->be(array(1, true));
+		});
+	});
 });

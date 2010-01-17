@@ -373,3 +373,34 @@ function array_find($array, $finder)
 	
 	return null;
 }
+
+/**
+ * Find many items into array
+ *
+ * Find the elements in array that is positive, or elements that passes into
+ * the iterator value.
+ *
+ * <code>
+ * array_find_all(array(1, 2, 3, 4), function($el) { return $el > 2; }); // => array(3, 4)
+ * </code>
+ *
+ * @param array $array the array to search into
+ * @param function $iterator the iterator to search
+ * @return array
+ */
+function array_find_all($array, $iterator = null)
+{
+	$found = array();
+	
+	if (!$iterator) {
+		$iterator = function($var) { return $var; };
+	}
+	
+	foreach ($array as $value) {
+		if ($iterator($value)) {
+			$found[] = $value;
+		}
+	}
+	
+	return $found;
+}
