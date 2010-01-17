@@ -47,7 +47,7 @@ class Base extends \LimberSupport\DynamicObject
 	/**
 	 * Defines a new route
 	 */
-	public function connect($route_name, $options)
+	public function connect($route_name, $options = array())
 	{
 		$this->_routes[] = new Route($route_name, $options);
 	}
