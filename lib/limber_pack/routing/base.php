@@ -57,11 +57,7 @@ class Base extends \LimberSupport\DynamicObject
 	 */
 	public function match($route_string)
 	{
-		foreach ($this->_routes as $route) {
-			if ($route->match($route_string)) {
-				return $route;
-			}
-		}
+		return array_find($this->_routes, function($r) use ($route_string) { return $r->match($route_string); });
 	}
 }
 
