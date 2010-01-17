@@ -345,3 +345,31 @@ function array_partition($array, $iterator = null)
 	
 	return array($trues, $falses);
 }
+
+/**
+ * Find an item into array
+ *
+ * This method use a scalar value or a function to search for an element into
+ * the array. Search functions is offen used for this, because you can find
+ * the first item into array that matches with this.
+ *
+ * <code>
+ * array_find(array(1, 2, 3, 4), function($el) { return $el > 2; }); // => 3
+ * </code>
+ *
+ * @param array $array the array to search into
+ * @param mixed $finder the finder function, or a scalar value to find
+ * @return mixed
+ */
+function array_find($array, $finder)
+{
+	if (!is_object($finder)) {
+		$finder = function($i) use ($finder) { return $finder === $i; };
+	}
+	
+	foreach ($array as $item) {
+		if ($finder($item)) return $item;
+	}
+	
+	return null;
+}

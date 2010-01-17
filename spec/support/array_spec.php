@@ -177,4 +177,22 @@ describe("Array Support", function($spec) {
 			$spec($partitioned)->should->be(array(array(2, 4), array(1, 3, 5)));
 		});
 	});
+	
+	$spec->context("findind items", function($spec) {
+		$spec->before_each(function($data) {
+			$data->data = array(1, 2, 3, 4, 5);
+		});
+		
+		$spec->it("should find items in array by the given argument literal", function($spec, $data) {
+			$spec(array_find($data->data, 3))->should->be(3);
+		});
+		
+		$spec->it("should return null if the value are not contained into array", function($spec, $data) {
+			$spec(array_find($data->data, 8))->should->be(null);
+		});
+		
+		$spec->it("should find using a comparation function", function($spec, $data) {
+			$spec(array_find($data->data, function($i) { return ($i % 2) == 0;}))->should->be(2);
+		});
+	});
 });
