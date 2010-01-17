@@ -80,7 +80,7 @@ class Route extends \LimberSupport\DynamicObject
 		$route = preg_quote($this->raw, "/");
 		$route = preg_replace("/\\\\:" . static::$PARAM_MATCHER . "/i", "([a-z0-9_]+)", $route);
 		
-		return "/$route/i";
+		return "/^$route$/i";
 	}
 	
 	public function map_param_names()

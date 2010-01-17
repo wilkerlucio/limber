@@ -95,13 +95,25 @@ describe("LimberPack Route", function($spec) {
 		$spec->it("should create route matcher", function($spec, $data) {
 			$route = new Route(":action", array("controller" => "main"));
 		
-			$spec($route->create_route_matcher())->should->be("/([a-z0-9_]+)/i");
+			$spec($route->create_route_matcher())->should->be("/^([a-z0-9_]+)$/i");
 		});
 		
 		$spec->it("should keep static names as quoted regex", function($spec, $data) {
 			$route = new Route("my_route/complex", array("controller" => "main", "action" => "index"));
 			
-			$spec($route->create_route_matcher())->should->be("/my_route\/complex/i");
+			$spec($route->create_route_matcher())->should->be("/^my_route\/complex$/i");
+		});
+		
+		$spec->it("should create route matcher with many variable paths", function($spec, $data) {
+			$route = new Route(":controller/:action", array("controller" => "main"));
+		
+			$spec($route->create_route_matcher())->should->be("/^([a-z0-9_]+)\/([a-z0-9_]+)$/i");
+		});
+		
+		$spec->it("should create route matcher with many variable paths and statics", function($spec, $data) {
+			$route = new Route(":controller/some/:action", array("controller" => "main"));
+		
+			$spec($route->create_route_matcher())->should->be("/^([a-z0-9_]+)\/some\/([a-z0-9_]+)$/i");
 		});
 	});
 	
@@ -135,6 +147,12 @@ describe("LimberPack Route", function($spec) {
 			$spec($route->controller)->should->be("users");
 			$spec($route->action)->should->be("view");
 			$spec($route->params["id"])->should->be("5");
+		});
+		
+		$spec->it("should not match if the matcher dont pass", function($spec, $data) {
+			$route = new Route(":action", array("controller" => "my_controller"));
+			
+			$spec($route->match("any/action"))->should->be(false);
 		});
 	});
 });

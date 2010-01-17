@@ -59,6 +59,7 @@ describe("Routing Base", function($spec) {
 			$data->router->draw(function($map) {
 				$map->connect("my_route", array("controller" => "main", "action" => "index"));
 				$map->connect(":action", array("controller" => "my_controller"));
+				$map->connect(":controller/:action");
 			});
 		});
 		
@@ -73,6 +74,13 @@ describe("Routing Base", function($spec) {
 			$route = $data->router->match("some_action");
 			
 			$spec($route->raw)->should->be(":action");
+		});
+		
+		$spec->it("should match the controller and action", function($spec, $data) {
+			$route = $data->router->match("some/other");
+			
+			$spec($route->controller)->should->be("some");
+			$spec($route->action)->should->be("other");
 		});
 	});
 });
