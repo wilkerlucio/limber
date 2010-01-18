@@ -22,7 +22,7 @@ class Uri
 {
 	public static function querystring()
 	{
-		return trim($_SERVER["PATH_INFO"], "/");
+		return trim(array_get($_SERVER, "PATH_INFO", ""), "/");
 	}
 }
 
