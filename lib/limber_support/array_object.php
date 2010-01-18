@@ -256,10 +256,10 @@ class ArrayObject extends DynamicObject implements \ArrayAccess, \Countable, \It
 	}
 	
 	/**
-	 * Pluck an attribute of objects into array
+	 * Make a new ArrayObject with the invoked data of objects
 	 *
-	 * @see array_pluck
-	 * @param string $attribute
+	 * @see array_invoke
+	 * @param string $method
 	 * @return ArrayObject
 	 */
 	public function invoke_self()
