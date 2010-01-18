@@ -170,10 +170,15 @@ abstract class DynamicObject
 		
 		ClassParams::set(get_called_class(), "static_methods", $methods);
 	}
-	
+		
 	public static function define_ghost_method($callback)
 	{
 		ClassParams::append(get_called_class(), "ghost_methods", $callback);
+	}
+	
+	public static function define_static_ghost_method($callback)
+	{
+		ClassParams::append(get_called_class(), "static_ghost_methods", $callback);
 	}
 	
 	public function has_method($method_name)
@@ -316,11 +321,24 @@ abstract class DynamicObject
 		
 		array_unshift($arguments, get_called_class());
 		
+		//try regular method definitions
 		foreach ($iterator as $current_class) {
 			$methods = ClassParams::get($current_class, "static_methods", array());
 			
 			if (isset($methods[$method])) {
 				return call_user_func_array($methods[$method], $arguments);
+			}
+		}
+		
+		//try ghost method definitions after
+		foreach ($iterator as $current_class) {
+			$ghosts = ClassParams::get($current_class, "static_ghost_methods", array());
+
+			foreach ($ghosts as $ghost) {
+				try {
+					$value = call_user_func($ghost, $current_class, $method, array_slice($arguments, 1));
+					return $value;
+				} catch (CallerContinueException $e) {}
 			}
 		}
 		
