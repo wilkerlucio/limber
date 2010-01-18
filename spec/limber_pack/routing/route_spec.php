@@ -154,5 +154,14 @@ describe("LimberPack Route", function($spec) {
 			
 			$spec($route->match("any/action"))->should->be(false);
 		});
+
+		$spec->context("using default parameters", function($spec) {
+			$spec->it("should accepts default parameters", function($spec, $data) {
+				$route = new Route("photos/:id", array("controller" => "photos", "action" => "show", "defaults" => array("format" => "jpg")));
+				$route->match("photos/5");
+				
+				$spec($route->params["format"])->should->be("jpg");
+			});
+		});
 	});
 });

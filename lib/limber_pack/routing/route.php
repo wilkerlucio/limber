@@ -31,12 +31,19 @@ class Route extends \LimberSupport\DynamicObject
 	public function __construct($route, $options = array())
 	{
 		$this->raw = $route;
-		$this->_options = $options;
+		
+		$this->_options = array_merge(array(
+			"controller" => null,
+			"action" => null,
+			"defaults" => array()
+		), $options);
+		
 		$this->_assigned = false;
 		$this->_params = array();
 		
 		$this->_params["controller"] = array_get($options, "controller", null);
 		$this->_params["action"] = array_get($options, "action", null);
+		$this->_params = array_merge($this->_params, $this->_options["defaults"]);
 		
 		if (!$this->_params["controller"] && !$this->has_url_param("controller")) {
 			throw new InvalidRouteException("The controller should be defined in the route");
