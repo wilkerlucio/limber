@@ -404,3 +404,41 @@ function array_find_all($array, $iterator = null)
 	
 	return $found;
 }
+
+
+/**
+ * Zip data of arrays
+ *
+ * Zip is a way to join data of many arrays and iterate over it
+ *
+ * <code>
+ * //sample data
+ * $a = array(1, 2, 3);
+ * $b = array(4, 5, 6);
+ * 
+ * //using without a iterator
+ * array_zip($a, $b); // array(array(1, 4), array(2, 5), array(3, 6))
+ * 
+ * //using with a iterator
+ * array_zip(function($x, $y) { return $x + $y; }, $a, $b); // array(5, 7, 9);
+ * </code>
+ */
+function array_zip()
+{
+	$args = func_get_args();
+	$build = array();
+	
+	$iterator = is_a($args[0], "Closure") ? array_shift($args) : function() { $args = func_get_args(); return $args; };
+	
+	for ($i = 0; $i < count($args[0]); $i++) {
+		$row = array();
+		
+		foreach ($args as $array) {
+			$row[] = $array[$i];
+		}
+		
+		$build[] = call_user_func_array($iterator, $row);
+	}
+	
+	return $build;
+}

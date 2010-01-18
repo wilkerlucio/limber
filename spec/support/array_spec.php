@@ -213,4 +213,19 @@ describe("Array Support", function($spec) {
 			$spec(array_find_all(array(1, 0, null, true)))->should->be(array(1, true));
 		});
 	});
+	
+	$spec->context("zip arrays", function($spec) {
+		$spec->before_each(function($data) {
+			$data->a = array(1, 2, 3);
+			$data->b = array(4, 5, 6);
+		});
+		
+		$spec->it("should zip arrays", function($spec, $data) {
+			$spec(array_zip($data->a, $data->b))->should->be(array(array(1, 4), array(2, 5), array(3, 6)));
+		});
+		
+		$spec->it("should iterate with zipped data and return the value if a function is passed as first argument", function($spec, $data) {
+			$spec(array_zip(function($a, $b) { return $a + $b; }, $data->a, $data->b))->should->be(array(5, 7, 9));
+		});
+	});
 });
