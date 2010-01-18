@@ -278,20 +278,14 @@ abstract class DynamicObject
 		array_unshift($arguments, $this);
 		
 		if (isset($this->_instance_methods[$method])) {
-			try {
-				$value = call_user_func_array($this->_instance_methods[$method], $arguments);
-				return $value;
-			} catch(CallerContinueException $e) {}
+			return call_user_func_array($this->_instance_methods[$method], $arguments);
 		}
 		
 		foreach ($iterator as $current_class) {
 			$methods = ClassParams::get($current_class, "methods", array());
 			
 			if (isset($methods[$method])) {
-				try {
-					$value = call_user_func_array($methods[$method], $arguments);
-					return $value;
-				} catch(CallerContinueException $e) {}
+				return call_user_func_array($methods[$method], $arguments);
 			}
 		}
 		
@@ -308,10 +302,7 @@ abstract class DynamicObject
 			$methods = ClassParams::get($current_class, "static_methods", array());
 			
 			if (isset($methods[$method])) {
-				try {
-					$value = call_user_func_array($methods[$method], $arguments);
-					return $value;
-				} catch(CallerContinueException $e) {}
+				return call_user_func_array($methods[$method], $arguments);
 			}
 		}
 		
