@@ -120,6 +120,14 @@ DynamicObjectTest::define_static_method("define_simple_getter", function($class_
 	});
 });
 
+DynamicObjectTest::define_ghost_method(function($object, $method_name, $args) {
+	if (preg_match("/^(.*)_path$/", $method_name, $matches)) {
+		return $matches[1];
+	} else {
+		throw new CallerContinueException();
+	}
+});
+
 describe("Dynamic Object", function($spec) {
 	$spec->context("using attr_accessors", function($spec) {
 		$spec->it("should use dynamic attribute", function($spec, $data) {
@@ -303,6 +311,14 @@ describe("Dynamic Object", function($spec) {
 
 		$spec->it("should work with static methods with args", function ($spec, $data) {
 			$spec(DynamicObjectTest::module_static_with_args(3))->should->be("with 3 argument");
+		});
+	});
+	
+	$spec->context("calling ghost methods", function($spec) {
+		$spec->it("should return the value if method cautch what it needs", function($spec, $data) {
+			$obj = new DynamicObjectTest();
+			
+			$spec($obj->name_path())->should->be("name");
 		});
 	});
 });
