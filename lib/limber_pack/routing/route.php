@@ -35,7 +35,8 @@ class Route extends \LimberSupport\DynamicObject
 		$this->_options = array_merge(array(
 			"controller" => null,
 			"action" => null,
-			"defaults" => array()
+			"defaults" => array(),
+			"requirements" => array()
 		), $options);
 		
 		$this->_assigned = false;
@@ -106,12 +107,20 @@ class Route extends \LimberSupport\DynamicObject
 		$route_matcher = $this->create_route_matcher();
 		
 		if (preg_match($route_matcher, $route_string, $matches)) {
+			
 			$param_order = $this->map_param_names();
-			$this->_assigned = true;
 			
 			foreach ($param_order as $key => $value) {
 				$this->_params[$value] = $matches[$key + 1];
 			}
+			
+			foreach ($this->_options["requirements"] as $key => $value) {
+				if (!preg_match($value, $this->_params[$key])) {
+					return false;
+				}
+			}
+			
+			$this->_assigned = true;
 			
 			return true;
 		}

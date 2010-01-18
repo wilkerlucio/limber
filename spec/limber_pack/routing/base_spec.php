@@ -96,4 +96,22 @@ describe("Routing Base", function($spec) {
 			$spec(array_keys($router->_named_routes))->should->include("login");
 		});
 	});
+	
+	$spec->context("route requirements", function($spec) {
+		$spec->before_each(function($data) {
+			$data->router = new Router();
+			$data->router->draw(function($map) {
+				$map->connect(":action", array("controller" => "main", "requirements" => array("action" => "/.*_path/")));
+				$map->connect(":action", array("controller" => "other"));
+			});
+		});
+				
+		$spec->it("should pass throught if the requirements don't pass", function($spec, $data) {
+			$spec($data->router->match("some")->controller)->should->be("other");
+		});
+		
+		$spec->it("should match if requirement pass", function($spec, $data) {
+			$spec($data->router->match("some_path")->controller)->should->be("main");
+		});
+	});
 });

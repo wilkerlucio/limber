@@ -163,5 +163,11 @@ describe("LimberPack Route", function($spec) {
 				$spec($route->params["format"])->should->be("jpg");
 			});
 		});
+		
+		$spec->it("should not match if requirements don't pass", function($spec, $data) {
+			$route = new Route(":action", array("controller" => "main", "requirements" => array("action" => "/.*_path/")));
+			
+			$spec($route->match("some"))->should->be(false);
+		});
 	});
 });
