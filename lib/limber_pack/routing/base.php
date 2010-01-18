@@ -23,17 +23,15 @@ require_once "limber_pack/routing/route.php";
 
 class Base extends \LimberSupport\DynamicObject
 {
-	public $_routes = array();
-	public $_named_routes = array();
-	public $_default_action = "index";
-	public $_default_format = "html";
+	public $routes = array();
+	public $named_routes = array();
 	
 	/**
 	 * Get current routes
 	 */
 	public function routes()
 	{
-		return $this->_routes;
+		return $this->routes;
 	}
 	
 	/**
@@ -52,7 +50,7 @@ class Base extends \LimberSupport\DynamicObject
 	public function connect($route_name, $options = array())
 	{
 		$route = new Route($route_name, $options);
-		$this->_routes[] = $route;
+		$this->routes[] = $route;
 		
 		return $route;
 	}
@@ -62,7 +60,7 @@ class Base extends \LimberSupport\DynamicObject
 	 */
 	public function connect_named_route($name, $route, $options = array())
 	{
-		$this->_named_routes[$name] = $this->connect($route, $options);
+		$this->named_routes[$name] = $this->connect($route, $options);
 	}
 	
 	/**
@@ -70,8 +68,6 @@ class Base extends \LimberSupport\DynamicObject
 	 */
 	public function match($route_string)
 	{
-		return array_find($this->_routes, function($r) use ($route_string) { return $r->match($route_string); });
+		return array_find($this->routes, function($r) use ($route_string) { return $r->match($route_string); });
 	}
 }
-
-Base::attr_accessor("default_action", "default_format");

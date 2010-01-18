@@ -33,26 +33,6 @@ describe("Routing Base", function($spec) {
 			
 			$spec(array_map(function($r) { return $r->raw; }, $data->router->routes))->should->include("some_route");
 		});
-		
-		$spec->it("should use index as default action", function($spec, $data) {
-			$spec($data->router->default_action)->should->be("index");
-		});
-		
-		$spec->it("should use html as default format", function($spec, $data) {
-			$spec($data->router->default_format)->should->be("html");
-		});
-		
-		$spec->it("should accepts changes to default action", function($spec, $data) {
-			$data->router->default_action = "main";
-			
-			$spec($data->router->default_action)->should->be("main");
-		});
-		
-		$spec->it("should accepts changes to default format", function($spec, $data) {
-			$data->router->default_format = "json";
-			
-			$spec($data->router->default_format)->should->be("json");
-		});
 	});
 	
 	$spec->context("matching routes", function($spec) {
@@ -93,7 +73,7 @@ describe("Routing Base", function($spec) {
 				$map->login("enter", array("controller" => "usersessions", "action" => "new"));
 			});
 			
-			$spec(array_keys($router->_named_routes))->should->include("login");
+			$spec(array_keys($router->named_routes))->should->include("login");
 		});
 	});
 	

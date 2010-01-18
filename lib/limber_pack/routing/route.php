@@ -22,29 +22,29 @@ class Route extends \LimberSupport\DynamicObject
 {
 	public static $PARAM_MATCHER = "[a-z][a-z0-9_]*";
 	
-	public $_raw;
-	public $_options;
+	public $raw;
+	public $options;
+	public $assigned;
 	
-	public $_assigned;
 	public $_params;
 	
 	public function __construct($route, $options = array())
 	{
 		$this->raw = $route;
 		
-		$this->_options = array_merge(array(
+		$this->options = array_merge(array(
 			"controller" => null,
 			"action" => null,
 			"defaults" => array(),
 			"requirements" => array()
 		), $options);
 		
-		$this->_assigned = false;
+		$this->assigned = false;
 		$this->_params = array();
 		
 		$this->_params["controller"] = $options["controller"];
 		$this->_params["action"] = $options["action"];
-		$this->_params = array_merge($this->_params, $this->_options["defaults"]);
+		$this->_params = array_merge($this->_params, $this->options["defaults"]);
 		
 		if (!$this->_params["controller"] && !$this->has_url_param("controller")) {
 			throw new InvalidRouteException("The controller should be defined in the route");
@@ -64,21 +64,21 @@ class Route extends \LimberSupport\DynamicObject
 	
 	public function controller()
 	{
-		if (!$this->_assigned) throw new RouteNotAssignedException();
+		if (!$this->assigned) throw new RouteNotAssignedException();
 		
 		return $this->_params["controller"];
 	}
 		
 	public function action()
 	{
-		if (!$this->_assigned) throw new RouteNotAssignedException();
+		if (!$this->assigned) throw new RouteNotAssignedException();
 		
 		return $this->_params["action"];
 	}
 	
 	public function params()
 	{
-		if (!$this->_assigned) throw new RouteNotAssignedException();
+		if (!$this->assigned) throw new RouteNotAssignedException();
 		
 		return $this->_params;
 	}
@@ -107,20 +107,19 @@ class Route extends \LimberSupport\DynamicObject
 		$route_matcher = $this->create_route_matcher();
 		
 		if (preg_match($route_matcher, $route_string, $matches)) {
-			
 			$param_order = $this->map_param_names();
 			
 			foreach ($param_order as $key => $value) {
 				$this->_params[$value] = $matches[$key + 1];
 			}
 			
-			foreach ($this->_options["requirements"] as $key => $value) {
+			foreach ($this->options["requirements"] as $key => $value) {
 				if (!preg_match($value, $this->_params[$key])) {
 					return false;
 				}
 			}
 			
-			$this->_assigned = true;
+			$this->assigned = true;
 			
 			return true;
 		}
@@ -128,8 +127,6 @@ class Route extends \LimberSupport\DynamicObject
 		return false;
 	}
 }
-
-Route::attr_accessor("raw");
 
 class RouteNotAssignedException extends \Exception {}
 class InvalidRouteException extends \Exception {}
