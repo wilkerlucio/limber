@@ -18,11 +18,13 @@
 
 namespace LimberPack\Routing;
 
+require_once "limber_pack/routing/connector.php";
 require_once "limber_pack/routing/route.php";
 
 class Base extends \LimberSupport\DynamicObject
 {
 	public $_routes = array();
+	public $_named_routes = array();
 	public $_default_action = "index";
 	public $_default_format = "html";
 	
@@ -41,7 +43,7 @@ class Base extends \LimberSupport\DynamicObject
 	 */
 	public function draw($mapper)
 	{
-		$mapper($this);
+		$mapper(new Connector($this));
 	}
 	
 	/**
@@ -49,7 +51,18 @@ class Base extends \LimberSupport\DynamicObject
 	 */
 	public function connect($route_name, $options = array())
 	{
-		$this->_routes[] = new Route($route_name, $options);
+		$route = new Route($route_name, $options);
+		$this->_routes[] = $route;
+		
+		return $route;
+	}
+	
+	/**
+	 * Defines a named route
+	 */
+	public function connect_named_route($name, $route, $options = array())
+	{
+		$this->_named_routes[$name] = $this->connect($route, $options);
 	}
 	
 	/**

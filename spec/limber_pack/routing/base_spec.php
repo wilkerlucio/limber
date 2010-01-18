@@ -83,4 +83,15 @@ describe("Routing Base", function($spec) {
 			$spec($route->action)->should->be("other");
 		});
 	});
+	
+	$spec->context("named routes", function($spec) {
+		$spec->it("should create a named route", function($spec, $data) {
+			$router = new \LimberPack\Routing\Base();
+			$router->draw(function($map) {
+				$map->login("enter", array("controller" => "usersessions", "action" => "new"));
+			});
+			
+			$spec(array_keys($router->_named_routes))->should->include("login");
+		});
+	});
 });
