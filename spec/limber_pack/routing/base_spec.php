@@ -18,10 +18,12 @@
 
 require_once "limber_pack.php";
 
+use LimberPack\Routing\Base as Router;
+
 describe("Routing Base", function($spec) {
 	$spec->context("mapping new routes", function($spec) {
 		$spec->before_each(function($data) {
-			$data->router = new \LimberPack\Routing\Base();
+			$data->router = new Router();
 		});
 		
 		$spec->it("should map routes with connect method", function($spec, $data) {
@@ -55,7 +57,7 @@ describe("Routing Base", function($spec) {
 	
 	$spec->context("matching routes", function($spec) {
 		$spec->before_each(function($data) {
-			$data->router = new \LimberPack\Routing\Base();
+			$data->router = new Router();
 			$data->router->draw(function($map) {
 				$map->connect("my_route", array("controller" => "main", "action" => "index"));
 				$map->connect(":action", array("controller" => "my_controller"));
@@ -86,7 +88,7 @@ describe("Routing Base", function($spec) {
 	
 	$spec->context("named routes", function($spec) {
 		$spec->it("should create a named route", function($spec, $data) {
-			$router = new \LimberPack\Routing\Base();
+			$router = new Router();
 			$router->draw(function($map) {
 				$map->login("enter", array("controller" => "usersessions", "action" => "new"));
 			});
