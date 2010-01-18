@@ -24,5 +24,21 @@ class Uri
 	{
 		return trim(array_get($_SERVER, "PATH_INFO", ""), "/");
 	}
+	
+	/**
+	 * Get Resquest Method
+	 *
+	 * @return string
+	 */
+	public static function method()
+	{
+		$method = $_SERVER["REQUEST_METHOD"];
+		
+		if ($method == "POST" && isset($_POST["_method"])) {
+			$method = $_POST["_method"];
+		}
+		
+		return strtolower($method);
+	}
 }
 
