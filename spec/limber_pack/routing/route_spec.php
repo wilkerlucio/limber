@@ -137,7 +137,7 @@ describe("LimberPack Route", function($spec) {
 		$spec->it("should map the params array", function($spec, $data) {
 			$route = new Route(":controller/view/:id", array("action" => "show"));
 			
-			$spec($route->map_param_names())->should->be(array("controller", "id"));
+			$spec($route->map_param_names())->should->be(array(array("controller", ":"), array("id", ":")));
 		});
 		
 		$spec->it("should replace de params correctly", function($spec, $data) {
@@ -168,6 +168,13 @@ describe("LimberPack Route", function($spec) {
 			$route = new Route(":action", array("controller" => "main", "requirements" => array("action" => "/.*_path/")));
 			
 			$spec($route->match("some"))->should->be(false);
+		});
+		
+		$spec->it("should match globbing routes", function($spec, $data) {
+			$route = new Route("photos/*other", array("controller" => "photos", "action" => "unknown"));
+			$route->match("photos/some/other/values");
+			
+			$spec($route->params["other"])->should->be(array("some", "other", "values"));
 		});
 	});
 });

@@ -87,6 +87,7 @@ class Route extends \LimberSupport\DynamicObject
 	{
 		$route = preg_quote($this->raw, "/");
 		$route = preg_replace("/\\\\:" . static::$PARAM_MATCHER . "/i", "([a-z0-9_]+)", $route);
+		$route = preg_replace("/\\\\\\*" . static::$PARAM_MATCHER . "/i", "(.+)", $route);
 		
 		return "/^$route$/i";
 	}
@@ -95,8 +96,8 @@ class Route extends \LimberSupport\DynamicObject
 	{
 		$params = array();
 		
-		if (preg_match_all("/:(" . static::$PARAM_MATCHER . ")/", $this->raw, $matches)) {
-			array_append($params, $matches[1]);
+		if (preg_match_all("/(:|\\*)(" . static::$PARAM_MATCHER . ")/", $this->raw, $matches)) {
+			array_append($params, array_zip($matches[2], $matches[1]));
 		}
 		
 		return $params;
@@ -110,7 +111,7 @@ class Route extends \LimberSupport\DynamicObject
 			$param_order = $this->map_param_names();
 			
 			foreach ($param_order as $key => $value) {
-				$this->_params[$value] = $matches[$key + 1];
+				$this->_params[$value[0]] = $value[1] == '*' ? explode("/", $matches[$key + 1]) : $matches[$key + 1];
 			}
 			
 			foreach ($this->options["requirements"] as $key => $value) {
