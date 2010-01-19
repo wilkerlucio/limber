@@ -245,7 +245,7 @@ class ArrayObject extends DynamicObject implements \ArrayAccess, \Countable, \It
 	 * @param string $method
 	 * @return ArrayObject
 	 */
-	public function invoke($method)
+	public function invoke()
 	{
 		$args = func_get_args();
 		
@@ -256,7 +256,7 @@ class ArrayObject extends DynamicObject implements \ArrayAccess, \Countable, \It
 	}
 	
 	/**
-	 * Make a new ArrayObject with the invoked data of objects
+	 * Invoked and translate data of object
 	 *
 	 * @see array_invoke
 	 * @param string $method
@@ -268,6 +268,58 @@ class ArrayObject extends DynamicObject implements \ArrayAccess, \Countable, \It
 		array_unshift($args, $this->data);
 		
 		$this->data = call_user_func_array("array_invoke", $args);
+		
+		return $this;
+	}
+	
+	/**
+	 * Append items into a new ArrayObject
+	 * 
+	 * @see array_append
+	 * @param array $data Data to be appended
+	 * @return ArrayObject
+	 */
+	public function append($data)
+	{
+		$obj = clone $this;
+		$obj->append($data);
+		
+		return $obj;
+	}
+	
+	/**
+	 * Append items into ArrayObject
+	 * 
+	 * @see array_append
+	 * @param array $data Data to be appended
+	 * @return ArrayObject
+	 */
+	public function append_self($data)
+	{
+		array_append($this->data, $data);
+
+		return $this;
+	}
+	
+	/**
+	 * Inject array data
+	 *
+	 * @see array_inject
+	 * @param mixed $initial
+	 * @param function $iterator
+	 * @return ArrayObject
+	 */
+	public function inject($initial, $iterator)
+	{
+		$obj = clone $this;
+		$obj->inject_self($initial, $iterator);
+		
+		return $obj;
+	}
+	
+	public function inject_self($initial, $iterator)
+	{
+		$this->data = array_inject($this->data, $initial, $iterator);
 		
 		return $this;
 	}
