@@ -363,7 +363,7 @@ function array_partition($array, $iterator = null)
  */
 function array_find($array, $finder)
 {
-	if (!is_object($finder)) {
+	if (!is_closure($finder)) {
 		$finder = function($i) use ($finder) { return $finder === $i; };
 	}
 	
