@@ -282,7 +282,7 @@ class ArrayObject extends DynamicObject implements \ArrayAccess, \Countable, \It
 	public function append($data)
 	{
 		$obj = clone $this;
-		$obj->append($data);
+		$obj->append_self($data);
 		
 		return $obj;
 	}
@@ -311,16 +311,6 @@ class ArrayObject extends DynamicObject implements \ArrayAccess, \Countable, \It
 	 */
 	public function inject($initial, $iterator)
 	{
-		$obj = clone $this;
-		$obj->inject_self($initial, $iterator);
-		
-		return $obj;
-	}
-	
-	public function inject_self($initial, $iterator)
-	{
-		$this->data = array_inject($this->data, $initial, $iterator);
-		
-		return $this;
+		return array_inject($this->data, $initial, $iterator);
 	}
 }

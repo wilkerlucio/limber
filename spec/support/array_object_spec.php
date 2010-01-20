@@ -32,6 +32,21 @@ class ArrayObjectExtendedTest extends ArrayObject
 	}
 }
 
+class AO_A
+{
+	public $n;
+	
+	public function __construct($n)
+	{
+		$this->n = $n;
+	}
+	
+	public function get_n($sum = 0)
+	{
+		return $this->n + $sum;
+	}
+}
+
 describe("ArrayObject class", function($spec) {
 	$spec->context("constructing", function($spec) {
 		$spec->it("should start empty", function($spec, $data) {
@@ -168,6 +183,60 @@ describe("ArrayObject class", function($spec) {
 			$enum->map_self(function($n) {return $n * 2;});
 			
 			$spec($enum->get_array())->should->be(array(2, 4, 6));
+		});
+	});
+	
+	$spec->context("pluck data", function($spec) {
+		$spec->it("should pluck data", function($spec, $data) {
+			$enum = new ArrayObject(new AO_A(2), new AO_A(4), new AO_A(7));
+			
+			$spec($enum->pluck("n")->get_array())->should->be(array(2, 4, 7));
+		});
+		
+		$spec->it("should pluck data into self", function($spec, $data) {
+			$enum = new ArrayObject(new AO_A(2), new AO_A(4), new AO_A(7));
+			$enum->pluck_self("n");
+			
+			$spec($enum->get_array())->should->be(array(2, 4, 7));
+		});
+	});
+	
+	$spec->context("invoking data", function($spec) {
+		$spec->it("should invoke method in array items", function($spec, $data) {
+			$enum = new ArrayObject(new AO_A(2), new AO_A(4), new AO_A(7));
+			
+			$spec($enum->invoke("get_n")->get_array())->should->be(array(2, 4, 7));
+		});
+		
+		$spec->it("should invoke method in array items with params", function($spec, $data) {
+			$enum = new ArrayObject(new AO_A(2), new AO_A(4), new AO_A(7));
+			
+			$spec($enum->invoke("get_n", 1)->get_array())->should->be(array(3, 5, 8));
+		});
+		
+		$spec->it("should invoke method in array items into self", function($spec, $data) {
+			$enum = new ArrayObject(new AO_A(2), new AO_A(4), new AO_A(7));
+			$enum->invoke_self("get_n");
+			
+			$spec($enum->get_array())->should->be(array(2, 4, 7));
+		});
+	});
+	
+	$spec->context("appendind data", function($spec) {
+		$spec->it("should append data into array", function($spec, $data) {
+			$enum = new ArrayObject(1, 2, 3);
+			
+			$spec($enum->append(array(4, 5))->get_array())->should->be(array(1, 2, 3, 4, 5));
+		});
+	});
+	
+	$spec->context("injecting data", function($spec) {
+		$spec->it("should inject data", function($spec, $data) {
+			$enum = new ArrayObject(1, 2, 3);
+			
+			$spec($enum->inject(0, function($sum, $acc) {
+				return $sum + $acc;
+			}))->should->be(6);
 		});
 	});
 });
