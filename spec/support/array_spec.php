@@ -41,6 +41,26 @@ class A
 class B {}
 
 describe("Array Support", function($spec) {
+	$spec->context("array_all", function($spec) {
+		$spec->it("should return true if all params return true on iterator", function($spec, $data) {
+			$spec(array_all(array(2, 4, 6), function($n) { return ($n % 2) == 0; }))->should->be(true);
+		});
+		
+		$spec->it("should return false if any params return false on iterator", function($spec, $data) {
+			$spec(array_all(array(2, 4, 5, 6), function($n) { return ($n % 2) == 0; }))->should->be(false);
+		});
+	});
+	
+	$spec->context("array_any", function($spec) {
+		$spec->it("should return true if any params return true on iterator", function($spec, $data) {
+			$spec(array_any(array(2, 5, 7), function($n) { return ($n % 2) == 0; }))->should->be(true);
+		});
+
+		$spec->it("should return false if all params return false on iterator", function($spec, $data) {
+			$spec(array_any(array(3, 5, 9), function($n) { return ($n % 2) == 0; }))->should->be(false);
+		});
+	});
+	
 	$spec->context("getting value of one array index", function($spec) {
 		$spec->it("should return the value of requested index", function($spec, $data) {
 			$spec(array_get(array(1, 2, 3), 1))->should->be(2);

@@ -24,6 +24,46 @@
  */
 
 /**
+ * Check if all items of array are trues on an iterator
+ *
+ * This method apply one iterator over all elements of array,
+ * if any of items returns false at iterator, this method will
+ * return false, otherwise it will return true
+ *
+ * @param array $array
+ * @param function $iterator
+ * @return boolean
+ */
+function array_all($array, $iterator)
+{
+	foreach ($array as $item) {
+		if (!$iterator($item)) return false;
+	}
+	
+	return true;
+}
+
+/**
+ * Check if any item of array are trues on an iterator
+ *
+ * This method apply one iterator over all elements of array,
+ * if any of items returns true at iterator, this method will
+ * return true, otherwise it will return false
+ *
+ * @param array $array
+ * @param function $iterator
+ * @return boolean
+ */
+function array_any($array, $iterator)
+{
+	foreach ($array as $item) {
+		if ($iterator($item)) return true;
+	}
+	
+	return false;
+}
+
+/**
  * Get the value of array at given index
  *
  * If you access an undefined index of array, the PHP will generate a warning,
