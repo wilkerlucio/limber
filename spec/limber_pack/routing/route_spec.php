@@ -177,4 +177,55 @@ describe("LimberPack Route", function($spec) {
 			$spec($route->params["other"])->should->be(array("some", "other", "values"));
 		});
 	});
+	
+	$spec->context("generating uri", function($spec) {
+		$spec->context("checking for params", function($spec) {
+			$spec->it("should return true if the route can parse the params with dynamic params", function($spec, $data) {
+				$route = new Route(":controller/:action");
+				$spec($route->support_params(array("controller" => "main", "action" => "index")))->should->be(true);
+			});
+			
+			$spec->it("should return true if the params are in defaults of route", function($spec, $data) {
+				$route = new Route("my/route", array("controller" => "main", "action" => "index"));
+				$spec($route->support_params(array("controller" => "main", "action" => "index")))->should->be(true);
+			});
+
+			$spec->it("should return false if the params doesn't supports", function($spec, $data) {
+				$route = new Route("my/route", array("controller" => "products", "action" => "index"));
+				$spec($route->support_params(array("controller" => "main", "action" => "index")))->should->be(false);
+			});
+			
+			$spec->it("should return with mixed params place", function($spec, $data) {
+				$route = new Route("my/:action", array("controller" => "main", "id" => "some"));
+				$spec($route->support_params(array("controller" => "main", "action" => "other")))->should->be(true);
+			});
+			
+			$spec->it("should return false if route needs params that aren't in requested params", function($spec, $data) {
+				$route = new Route(":controller/:action/:id");
+				$spec($route->support_params(array("controller" => "main", "action" => "other")))->should->be(false);
+			});
+		});
+		
+		$spec->context("generating", function($spec) {
+			$spec->it("should replace params", function($spec, $data) {
+				$route = new Route(":controller/view/:action");
+				$spec($route->generate_for(array("controller" => "main", "action" => "index")))->should->be("main/view/index");
+			});
+			
+			$spec->it("should add extra params if it isn't presente at raw of route", function($spec, $data) {
+				$route = new Route(":controller/view/:action");
+				$spec($route->generate_for(array("controller" => "main", "action" => "index", "page" => "5")))->should->be("main/view/index?page=5");
+			});
+			
+			$spec->it("should works with similar names", function($spec, $data) {
+				$route = new Route(":controller/view/:action/:cont");
+				$spec($route->generate_for(array("cont" => "some", "controller" => "main", "action" => "index")))->should->be("main/view/index/some");
+			});
+			
+			$spec->it("should return null if doesnt matches", function($spec, $data) {
+				$route = new Route("users/:id", array("controller" => "users", "action" => "show"));
+				$spec($route->generate_for(array("controller" => "users", "action" => "other")))->should->be(null);
+			});
+		});
+	});
 });

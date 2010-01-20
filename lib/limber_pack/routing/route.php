@@ -127,6 +127,52 @@ class Route extends \LimberSupport\DynamicObject
 		
 		return false;
 	}
+	
+	public function support_params($params)
+	{
+		$important_params = array("controller", "action");
+		$variable_params = array_map_key($this->map_param_names(), 0);
+		$options = $this->options;
+		
+		foreach ($variable_params as $required_param) {
+			if (!isset($params[$required_param])) return false;
+		}
+		
+		return array_all($important_params, function($param) use ($params, $variable_params, $options) {
+			if (in_array($param, $variable_params) || $options[$param] == $params[$param]) {
+				return true;
+			}
+			
+			return false;
+		});
+	}
+	
+	public function generate_for($params)
+	{
+		if (!$this->support_params($params)) return null;
+		
+		krsort($params); // ensure bigger keys will be matched before
+		
+		$qs_params = array();
+		$route = $this->raw;
+		$route_params = array_map_key($this->map_param_names(), 0);
+		
+		foreach ($params as $key => $value) {
+			$value = urlencode($value);
+			
+			if (in_array($key, $route_params)) {
+				$route = str_replace(":" . $key, $value, $route);
+			} else {
+				$qs_params[] = urlencode($key) . "=" . $value;
+			}
+		}
+		
+		if (count($qs_params) > 0) {
+			$route .= "?" . implode("&", $qs_params);
+		}
+		
+		return $route;
+	}
 }
 
 class RouteNotAssignedException extends \Exception {}

@@ -106,4 +106,27 @@ describe("Routing Base", function($spec) {
 			$spec(array_pluck($router->routes, "raw"))->should->be(array(":controller/:action/:id.:format", ":controller/:action/:id", ":controller/:action"));
 		});
 	});
+	
+	$spec->context("route discovery", function($spec) {
+		$spec->before_all(function($data) {
+			$data->router = new Router();
+			
+			$data->router->draw(function($map) {
+				$map->connect(":controller/:action/:cont");
+				$map->connect(":controller/:action");
+			});
+		});
+		
+		$spec->it("should discovery the route if exists", function($spec, $data) {
+			$spec($data->router->discover(array("controller" => "main", "action" => "index")))->should->be("main/index");
+		});
+		
+		$spec->it("should append params as get if not available", function($spec, $data) {
+			$spec($data->router->discover(array("controller" => "main", "action" => "index", "page" => "2")))->should->be("main/index?page=2");
+		});
+		
+		$spec->it("should work for simillar names", function($spec, $data) {
+			$spec($data->router->discover(array("con" => "some", "controller" => "main", "action" => "index")))->should->be("main/index?con=some");
+		});
+	});
 });

@@ -98,4 +98,23 @@ class Base extends \LimberSupport\DynamicObject
 	{
 		return array_find($this->routes, function($r) use ($route_string) { return $r->match($route_string); });
 	}
+	
+	/**
+	 * Get the best route for a set of params
+	 *
+	 * @param array $params
+	 * @return string
+	 */
+	public function discover($params)
+	{
+		foreach ($this->routes as $route) {
+			if (!$route->support_params($params)) continue;
+			
+			return $route->generate_for($params);
+		}
+		
+		throw new RouteNotAvailableException("Can't discover a route for: $params");
+	}
 }
+
+class RouteNotAvailableException extends \Exception {}
