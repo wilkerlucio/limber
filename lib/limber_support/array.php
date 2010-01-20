@@ -64,6 +64,127 @@ function array_any($array, $iterator)
 }
 
 /**
+ * Append items from one array to another
+ *
+ * This method behaviour like array_push, but instead of add one item this
+ * method accepts one array, and push all elements of this array into original
+ * one
+ *
+ * <code>
+ * $data = array("a", 1, "c");
+ * array_append($data, array("e", 2));
+ * 
+ * print_r($data);
+ * </code>
+ *
+ * This example will output:
+ *
+ * <code>
+ * Array
+ * (
+ *     [0] => a
+ *     [1] => 1
+ *     [2] => c
+ *     [3] => e
+ *     [4] => 2
+ * )
+ * </code>
+ *
+ * @param array $array array to receive data
+ * @param array $data array containing data to be added
+ * @return void
+ */
+function array_append(&$array, $data)
+{
+	foreach ($data as $value) {
+		$array[] = $value;
+	}
+
+	return $array;
+}
+
+/**
+ * Find an item into array
+ *
+ * This method use a scalar value or a function to search for an element into
+ * the array. Search functions is offen used for this, because you can find
+ * the first item into array that matches with this.
+ *
+ * <code>
+ * array_find(array(1, 2, 3, 4), function($el) { return $el > 2; }); // => 3
+ * </code>
+ *
+ * @param array $array the array to search into
+ * @param mixed $finder the finder function, or a scalar value to find
+ * @return mixed
+ */
+function array_find($array, $finder)
+{
+	if (!is_closure($finder)) {
+		$finder = function($i) use ($finder) { return $finder === $i; };
+	}
+
+	foreach ($array as $item) {
+		if ($finder($item)) return $item;
+	}
+
+	return null;
+}
+
+/**
+ * Find many items into array
+ *
+ * Find the elements in array that is positive, or elements that passes into
+ * the iterator value.
+ *
+ * <code>
+ * array_find_all(array(1, 2, 3, 4), function($el) { return $el > 2; }); // => array(3, 4)
+ * </code>
+ *
+ * @param array $array the array to search into
+ * @param function $iterator the iterator to search
+ * @return array
+ */
+function array_find_all($array, $iterator = null)
+{
+	$found = array();
+
+	if (!$iterator) {
+		$iterator = function($var) { return $var; };
+	}
+
+	foreach ($array as $value) {
+		if ($iterator($value)) {
+			$found[] = $value;
+		}
+	}
+
+	return $found;
+}
+
+/**
+ * Get a flatten version of an array
+ *
+ * This method gets one array and remove all nesting levels, leaving an
+ * flat array as the result
+ *
+ * example:
+ *
+ * <code>
+ * array_flatten(array("data", array("deept", "inside"))); //will return array("data", "deept", "inside")
+ * </code>
+ *
+ * @param array $array array to flatten
+ * @return array new flatten array
+ */
+function array_flatten($array)
+{
+	return array_inject($array, array(), function($acc, $value) {
+		return array_append($acc, is_array($value) ? array_flatten($value) : array($value));
+	});
+}
+
+/**
  * Get the value of array at given index
  *
  * If you access an undefined index of array, the PHP will generate a warning,
@@ -142,6 +263,32 @@ function array_group_by($array, $grouper)
 }
 
 /**
+ * Execute a series of executions into one accumulator value
+ *
+ * This method is used when you have a value, and want to progressive
+ * apply a serie of tasks with each of items into array to that value
+ *
+ * example:
+ *
+ * <code>
+ * array_inject(array(1, 2, 3), 0, function($acc, $value) { return $acc + $value }); //will return 6
+ * </code>
+ *
+ * @param array $array array with given data
+ * @param mixed $initial the initial value
+ * @param function $iterator iterator with task to do
+ * @return mixed the final value after the tasks
+ */
+function array_inject($array, $initial = 0, $iterator)
+{
+	foreach ($array as $value) {
+		$initial = $iterator($initial, $value);
+	}
+
+	return $initial;
+}
+
+/**
  * Invoke one method in all array items
  *
  * This function call a method in all items of the array, and return one
@@ -214,6 +361,45 @@ function array_invoke($array, $method = null)
 }
 
 /**
+ * Partition one array
+ *
+ * Split one array in two, giving the true data into first array, and false
+ * data into the second array. You can use a custom iterator to decide if a
+ * value is true or false
+ *
+ * <code>
+ * $data = array(1, 2, 3, 4, 5);
+ *
+ * list($even, $odd) = array_partition($data, function($item) { return ($item % 2) == 0 });
+ *
+ * echo $even; // => array(2, 4)
+ * echo $odd; // => array(1, 3, 5)
+ * </code>
+ *
+ * @param array $array data to partition
+ * @param function $iterator
+ * @return array
+ */
+function array_partition($array, $iterator = null)
+{
+	$trues = $falses = array();
+
+	if (!$iterator) {
+		$iterator = function($var) { return $var; };
+	}
+
+	foreach ($array as $item) {
+		if ($iterator($item)) {
+			$trues[] = $item;
+		} else {
+			$falses[] = $item;
+		}
+	}
+
+	return array($trues, $falses);
+}
+
+/**
  * Get some attribute of each object in array
  *
  * This method get some attribute at each element of array and return one
@@ -258,193 +444,6 @@ function array_pluck($array, $attribute)
 		return $item->$attribute;
 	}, $array);
 }
-
-/**
- * Append items from one array to another
- *
- * This method behaviour like array_push, but instead of add one item this
- * method accepts one array, and push all elements of this array into original
- * one
- *
- * <code>
- * $data = array("a", 1, "c");
- * array_append($data, array("e", 2));
- * 
- * print_r($data);
- * </code>
- *
- * This example will output:
- *
- * <code>
- * Array
- * (
- *     [0] => a
- *     [1] => 1
- *     [2] => c
- *     [3] => e
- *     [4] => 2
- * )
- * </code>
- *
- * @param array $array array to receive data
- * @param array $data array containing data to be added
- * @return void
- */
-function array_append(&$array, $data)
-{
-	foreach ($data as $value) {
-		$array[] = $value;
-	}
-	
-	return $array;
-}
-
-/**
- * Execute a series of executions into one accumulator value
- *
- * This method is used when you have a value, and want to progressive
- * apply a serie of tasks with each of items into array to that value
- *
- * example:
- *
- * <code>
- * array_inject(array(1, 2, 3), 0, function($acc, $value) { return $acc + $value }); //will return 6
- * </code>
- *
- * @param array $array array with given data
- * @param mixed $initial the initial value
- * @param function $iterator iterator with task to do
- * @return mixed the final value after the tasks
- */
-function array_inject($array, $initial = 0, $iterator)
-{
-	foreach ($array as $value) {
-		$initial = $iterator($initial, $value);
-	}
-	
-	return $initial;
-}
-
-/**
- * Get a flatten version of an array
- *
- * This method gets one array and remove all nesting levels, leaving an
- * flat array as the result
- *
- * example:
- *
- * <code>
- * array_flatten(array("data", array("deept", "inside"))); //will return array("data", "deept", "inside")
- * </code>
- *
- * @param array $array array to flatten
- * @return array new flatten array
- */
-function array_flatten($array)
-{
-	return array_inject($array, array(), function($acc, $value) {
-		return array_append($acc, is_array($value) ? array_flatten($value) : array($value));
-	});
-}
-
-/**
- * Partition one array
- *
- * Split one array in two, giving the true data into first array, and false
- * data into the second array. You can use a custom iterator to decide if a
- * value is true or false
- *
- * <code>
- * $data = array(1, 2, 3, 4, 5);
- *
- * list($even, $odd) = array_partition($data, function($item) { return ($item % 2) == 0 });
- *
- * echo $even; // => array(2, 4)
- * echo $odd; // => array(1, 3, 5)
- * </code>
- *
- * @param array $array data to partition
- * @param function $iterator
- * @return array
- */
-function array_partition($array, $iterator = null)
-{
-	$trues = $falses = array();
-	
-	if (!$iterator) {
-		$iterator = function($var) { return $var; };
-	}
-	
-	foreach ($array as $item) {
-		if ($iterator($item)) {
-			$trues[] = $item;
-		} else {
-			$falses[] = $item;
-		}
-	}
-	
-	return array($trues, $falses);
-}
-
-/**
- * Find an item into array
- *
- * This method use a scalar value or a function to search for an element into
- * the array. Search functions is offen used for this, because you can find
- * the first item into array that matches with this.
- *
- * <code>
- * array_find(array(1, 2, 3, 4), function($el) { return $el > 2; }); // => 3
- * </code>
- *
- * @param array $array the array to search into
- * @param mixed $finder the finder function, or a scalar value to find
- * @return mixed
- */
-function array_find($array, $finder)
-{
-	if (!is_closure($finder)) {
-		$finder = function($i) use ($finder) { return $finder === $i; };
-	}
-	
-	foreach ($array as $item) {
-		if ($finder($item)) return $item;
-	}
-	
-	return null;
-}
-
-/**
- * Find many items into array
- *
- * Find the elements in array that is positive, or elements that passes into
- * the iterator value.
- *
- * <code>
- * array_find_all(array(1, 2, 3, 4), function($el) { return $el > 2; }); // => array(3, 4)
- * </code>
- *
- * @param array $array the array to search into
- * @param function $iterator the iterator to search
- * @return array
- */
-function array_find_all($array, $iterator = null)
-{
-	$found = array();
-	
-	if (!$iterator) {
-		$iterator = function($var) { return $var; };
-	}
-	
-	foreach ($array as $value) {
-		if ($iterator($value)) {
-			$found[] = $value;
-		}
-	}
-	
-	return $found;
-}
-
 
 /**
  * Zip data of arrays
