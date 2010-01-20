@@ -94,4 +94,16 @@ describe("Routing Base", function($spec) {
 			$spec($data->router->match("some_path")->controller)->should->be("main");
 		});
 	});
+	
+	$spec->context("optional route params", function($spec) {
+		$spec->it("should generate a route for each optional param", function($spec, $data) {
+			$router = new Router();
+			
+			$router->draw(function($map) {
+				$map->connect(":controller/:action(/:id(.:format))");
+			});
+			
+			$spec(array_pluck($router->routes, "raw"))->should->be(array(":controller/:action/:id.:format", ":controller/:action/:id", ":controller/:action"));
+		});
+	});
 });

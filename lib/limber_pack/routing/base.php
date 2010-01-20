@@ -26,6 +26,25 @@ class Base extends \LimberSupport\DynamicObject
 	public $routes = array();
 	public $named_routes = array();
 	
+	public static function split_optional_routes($route)
+	{
+		if (preg_match("/\(([^()]+|(?R))*\)/", $route, $matches)) {
+			$routes = array();
+			
+			do {
+				$route = preg_replace("/\(([^()]+|(?R))*\)/", "", $route);
+				$routes[] = $route;
+				$route .= substr($matches[0], 1, -1);
+			} while (preg_match("/\(([^()]+|(?R))*\)/", $route, $matches));
+			
+			$routes[] = $route;
+			
+			return array_reverse($routes);
+		} else {
+			return null;
+		}
+	}
+	
 	/**
 	 * Get current routes
 	 */
@@ -47,12 +66,21 @@ class Base extends \LimberSupport\DynamicObject
 	/**
 	 * Defines a new route
 	 */
-	public function connect($route_name, $options = array())
+	public function connect($route, $options = array())
 	{
-		$route = new Route($route_name, $options);
-		$this->routes[] = $route;
-		
-		return $route;
+		if ($routes = static::split_optional_routes($route)) {
+			$routes = array_map(function($r) use ($options) {
+				return new Route($r, $options);
+			}, $routes);
+			
+			array_append($this->routes, $routes);
+			
+			return $routes;
+		} else {
+			$this->routes[] = new Route($route, $options);
+			
+			return $route_obj;
+		}
 	}
 	
 	/**
