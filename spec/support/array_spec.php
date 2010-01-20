@@ -199,6 +199,26 @@ describe("Array Support", function($spec) {
 			$spec($invoked)->should->be(array(5, 10, 15));
 		});
 	});
+	
+	$spec->context("array_map_key", function($spec) {
+		$spec->it("should return the key of each entry", function($spec, $data) {
+			$data = array(array(1, 2), array(3, 4), array(5, 6));
+			
+			$spec(array_map_key($data, 0))->should->be(array(1, 3, 5));
+		});
+		
+		$spec->it("should works with named keys", function($spec, $data) {
+			$data = array(array("name" => "some"), array("name" => "other"));
+			
+			$spec(array_map_key($data, "name"))->should->be(array("some", "other"));
+		});
+		
+		$spec->it("should returns null when keys doesn't exists", function($spec, $data) {
+			$data = array(array("name" => "some"), array("custom" => "thing"), array("name" => "hu"));
+			
+			$spec(array_map_key($data, "name"))->should->be(array("some", null, "hu"));
+		});
+	});
 
 	$spec->context("array_partition", function($spec) {
 		$spec->it("should return 2 arrays", function($spec, $data) {

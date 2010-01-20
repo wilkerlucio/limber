@@ -361,6 +361,21 @@ function array_invoke($array, $method = null)
 }
 
 /**
+ * It's like the pluck method, but fetchs by array index
+ *
+ * @see array_pluck
+ * @param array $array
+ * @param mixed $key
+ * @return array
+ */
+function array_map_key($array, $key)
+{
+	return array_map(function($row) use ($key) {
+		return array_get($row, $key, null);
+	}, $array);
+}
+
+/**
  * Partition one array
  *
  * Split one array in two, giving the true data into first array, and false
