@@ -239,4 +239,12 @@ describe("ArrayObject class", function($spec) {
 			}))->should->be(6);
 		});
 	});
+	
+	$spec->context("flattening data", function($spec) {
+		$spec->it("should flatten data", function($spec, $data) {
+			$enum = new ArrayObject(array(1, array(2, 3, array(5))));
+			
+			$spec($enum->flatten()->get_array())->should->be(array(1, 2, 3, 5));
+		});
+	});
 });

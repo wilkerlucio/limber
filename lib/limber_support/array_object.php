@@ -313,4 +313,31 @@ class ArrayObject extends DynamicObject implements \ArrayAccess, \Countable, \It
 	{
 		return array_inject($this->data, $initial, $iterator);
 	}
+	
+	/**
+	 * Get a new ArrayObject with flat data
+	 *
+	 * @see array_flatten
+	 * @return ArrayObject
+	 */
+	public function flatten()
+	{
+		$obj = clone $this;
+		$obj->flatten_self();
+		
+		return $obj;
+	}
+	
+	/**
+	 * Turn data into a flat array
+	 *
+	 * @see array_flatten
+	 * @return ArrayObject
+	 */
+	public function flatten_self()
+	{
+		$this->data = array_flatten($this->data);
+		
+		return $this;
+	}
 }
