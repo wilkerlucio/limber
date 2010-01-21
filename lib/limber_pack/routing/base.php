@@ -105,7 +105,7 @@ class Base extends \LimberSupport\DynamicObject
 	 * @param array $params
 	 * @return string
 	 */
-	public function discover($params)
+	public function generate($params)
 	{
 		foreach ($this->routes as $route) {
 			if (!$route->support_params($params)) continue;

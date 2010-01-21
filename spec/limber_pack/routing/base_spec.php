@@ -107,7 +107,7 @@ describe("Routing Base", function($spec) {
 		});
 	});
 	
-	$spec->context("route discovery", function($spec) {
+	$spec->context("route generation", function($spec) {
 		$spec->before_all(function($data) {
 			$data->router = new Router();
 			
@@ -117,16 +117,16 @@ describe("Routing Base", function($spec) {
 			});
 		});
 		
-		$spec->it("should discovery the route if exists", function($spec, $data) {
-			$spec($data->router->discover(array("controller" => "main", "action" => "index")))->should->be("main/index");
+		$spec->it("should generate the route if exists", function($spec, $data) {
+			$spec($data->router->generate(array("controller" => "main", "action" => "index")))->should->be("main/index");
 		});
 		
 		$spec->it("should append params as get if not available", function($spec, $data) {
-			$spec($data->router->discover(array("controller" => "main", "action" => "index", "page" => "2")))->should->be("main/index?page=2");
+			$spec($data->router->generate(array("controller" => "main", "action" => "index", "page" => "2")))->should->be("main/index?page=2");
 		});
 		
 		$spec->it("should work for simillar names", function($spec, $data) {
-			$spec($data->router->discover(array("con" => "some", "controller" => "main", "action" => "index")))->should->be("main/index?con=some");
+			$spec($data->router->generate(array("con" => "some", "controller" => "main", "action" => "index")))->should->be("main/index?con=some");
 		});
 	});
 });
