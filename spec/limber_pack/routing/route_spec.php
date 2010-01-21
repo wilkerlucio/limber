@@ -217,6 +217,11 @@ describe("LimberPack Route", function($spec) {
 				$spec($route->generate_for(array("controller" => "main", "action" => "index", "page" => "5")))->should->be("main/view/index?page=5");
 			});
 			
+			$spec->it("should not add extra value if its in defaults", function($spec, $data) {
+				$route = new Route("test", array("controller" => "main", "action" => "test", "defaults" => array("format" => "png")));
+				$spec($route->generate_for(array("controller" => "main", "action" => "test", "format" => "png", "page" => "2")))->should->be("test?page=2");
+			});
+			
 			$spec->it("should works with similar names", function($spec, $data) {
 				$route = new Route(":controller/view/:action/:cont");
 				$spec($route->generate_for(array("cont" => "some", "controller" => "main", "action" => "index")))->should->be("main/view/index/some");
@@ -225,6 +230,11 @@ describe("LimberPack Route", function($spec) {
 			$spec->it("should return null if doesnt matches", function($spec, $data) {
 				$route = new Route("users/:id", array("controller" => "users", "action" => "show"));
 				$spec($route->generate_for(array("controller" => "users", "action" => "other")))->should->be(null);
+			});
+			
+			$spec->it("should correct replace glob elements", function($spec, $data) {
+				$route = new Route("photos/*other", array("controller" => "photos", "action" => "unknown"));
+				$spec($route->generate_for(array("controller" => "photos", "action" => "unknown", "other" => array("some", "more", "items"))))->should->be("photos/some/more/items");
 			});
 		});
 	});

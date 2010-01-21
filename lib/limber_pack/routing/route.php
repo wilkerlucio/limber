@@ -42,8 +42,9 @@ class Route extends \LimberSupport\DynamicObject
 		$this->assigned = false;
 		$this->_params = array();
 		
-		$this->_params["controller"] = $options["controller"];
-		$this->_params["action"] = $options["action"];
+		$this->options["defaults"]["controller"] = $options["controller"];
+		$this->options["defaults"]["action"] = $options["action"];
+		
 		$this->_params = array_merge($this->_params, $this->options["defaults"]);
 		
 		if (!$this->_params["controller"] && !$this->has_url_param("controller")) {
@@ -158,12 +159,20 @@ class Route extends \LimberSupport\DynamicObject
 		$route_params = array_map_key($this->map_param_names(), 0);
 		
 		foreach ($params as $key => $value) {
-			$value = urlencode($value);
+			if (is_array($value)) {
+				$value_enc = implode("/", array_map("urlencode", $value));
+				$mark = "*";
+			} else {
+				$value_enc = urlencode($value);
+				$mark = ":";
+			}
 			
 			if (in_array($key, $route_params)) {
-				$route = str_replace(":" . $key, $value, $route);
+				$route = str_replace($mark . $key, $value_enc, $route);
 			} else {
-				$qs_params[] = urlencode($key) . "=" . $value;
+				if (array_get($this->options["defaults"], $key, null) != $value) {
+					$qs_params[] = urlencode($key) . "=" . $value_enc;
+				}
 			}
 		}
 		
