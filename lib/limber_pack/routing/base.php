@@ -77,7 +77,8 @@ class Base extends \LimberSupport\DynamicObject
 			
 			return $routes;
 		} else {
-			$this->routes[] = new Route($route, $options);
+			$route_obj = new Route($route, $options);
+			$this->routes[] = $route_obj;
 			
 			return $route_obj;
 		}
@@ -116,5 +117,18 @@ class Base extends \LimberSupport\DynamicObject
 		throw new RouteNotAvailableException("Can't discover a route for: $params");
 	}
 }
+
+Base::define_ghost_method(function($object, $method, $args) {
+	if (preg_match("/^(.*)_path$/", $method, $matches)) {
+		$route = array_get($object->named_routes, $matches[1]);
+		$params = array_merge($route->options["defaults"], array_get($args, 0, array()));
+		
+		if ($route) {
+			return $route->generate_for($params);
+		}
+	}
+	
+	throw new \LimberSupport\CallerContinueException();
+});
 
 class RouteNotAvailableException extends \Exception {}

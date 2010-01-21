@@ -128,5 +128,25 @@ describe("Routing Base", function($spec) {
 		$spec->it("should work for simillar names", function($spec, $data) {
 			$spec($data->router->generate(array("con" => "some", "controller" => "main", "action" => "index")))->should->be("main/index?con=some");
 		});
+		
+		$spec->context("generating named routes", function($spec) {
+			$spec->it("should get the named route by her name with _path at end", function($spec, $data) {
+				$router = new Router();
+				$router->draw(function($map) {
+					$map->login("login", array("controller" => "login", "action" => "create"));
+				});
+				
+				$spec($router->login_path())->should->be("login");
+			});
+			
+			$spec->it("should accept params to generate route", function($spec, $data) {
+				$router = new Router();
+				$router->draw(function($map) {
+					$map->user("user/:name", array("controller" => "users", "action" => "show"));
+				});
+				
+				$spec($router->user_path(array("name" => "wilker")))->should->be("user/wilker");
+			});
+		});
 	});
 });
