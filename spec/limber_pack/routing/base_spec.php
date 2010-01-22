@@ -31,7 +31,7 @@ describe("Routing Base", function($spec) {
 				$map->connect("some_route", array("controller" => "main", "action" => "index"));
 			});
 			
-			$spec(array_map(function($r) { return $r->raw; }, $data->router->routes))->should->include("some_route");
+			$spec(array_map(function($r) { return $r->raw; }, $data->router->routes))->should->includes("some_route");
 		});
 	});
 	
@@ -73,7 +73,7 @@ describe("Routing Base", function($spec) {
 				$map->login("enter", array("controller" => "usersessions", "action" => "new"));
 			});
 			
-			$spec(array_keys($router->named_routes))->should->include("login");
+			$spec(array_keys($router->named_routes))->should->includes("login");
 		});
 	});
 	
