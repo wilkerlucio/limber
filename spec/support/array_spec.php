@@ -151,10 +151,10 @@ describe("Array Support", function($spec) {
 		
 			$grouped = array_group_by($strings, function($string) { return strlen($string); });
 		
-			$spec($grouped[3])->should->includes(array("bee", "hii"));
+			$spec($grouped[3])->should->includes("bee", "hii");
 			$spec($grouped[4])->should->includes("bear");
-			$spec($grouped[5])->should->includes(array("apple", "money"));
-			$spec($grouped[6])->should->includes(array("banana", "monkey"));
+			$spec($grouped[5])->should->includes("apple", "money");
+			$spec($grouped[6])->should->includes("banana", "monkey");
 		});
 	});
 
