@@ -35,23 +35,11 @@ describe("LimberPack Route", function($spec) {
 		});
 		
 		$spec->it("should throw a InvalidRouteException if the controller is not defined", function($spec, $data) {
-			try {
-				$route = new Route("route", array());
-				
-				$spec(true)->should->be(false);
-			} catch (LimberPack\Routing\InvalidRouteException $e) {
-				$spec(true)->should->be(true);
-			}
+			$spec(function() { new Route("route", array()); })->should->throw("LimberPack\Routing\InvalidRouteException");
 		});
 		
 		$spec->it("should throw a InvalidRouteException if the action is not defined", function($spec, $data) {
-			try {
-				$route = new Route("route", array("controller" => "main"));
-				
-				$spec(true)->should->be(false);
-			} catch (LimberPack\Routing\InvalidRouteException $e) {
-				$spec(true)->should->be(true);
-			}
+			$spec(function() { new Route("route", array("controller" => "main")); })->should->throw("LimberPack\Routing\InvalidRouteException");
 		});
 		
 		$spec->it("should accept the controller and action as url params", function($spec, $data) {
@@ -67,27 +55,15 @@ describe("LimberPack Route", function($spec) {
 		});
 		
 		$spec->it("should throw a RouteNotAssignedException is the route was not assigned and try to get controller", function($spec, $data) {
-			try {
-				$data->route->controller;
-			} catch (LimberPack\Routing\RouteNotAssignedException $e) {
-				$spec(true)->should->be(true);
-			}
+			$spec(function() use($data) { $data->route->controller; })->should->throw("LimberPack\Routing\RouteNotAssignedException");
 		});
 		
 		$spec->it("should throw a RouteNotAssignedException is the route was not assigned and try to get action", function($spec, $data) {
-			try {
-				$data->route->action;
-			} catch (LimberPack\Routing\RouteNotAssignedException $e) {
-				$spec(true)->should->be(true);
-			}
+			$spec(function() use($data) { $data->route->action; })->should->throw("LimberPack\Routing\RouteNotAssignedException");
 		});
 		
 		$spec->it("should throw a RouteNotAssignedException is the route was not assigned and try to get params", function($spec, $data) {
-			try {
-				$data->route->params;
-			} catch (LimberPack\Routing\RouteNotAssignedException $e) {
-				$spec(true)->should->be(true);
-			}
+			$spec(function() use($data) { $data->route->params; })->should->throw("LimberPack\Routing\RouteNotAssignedException");
 		});
 	});
 	
