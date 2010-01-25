@@ -13,3 +13,19 @@
 # limitations under the License. 
 
 require 'rake'
+
+desc "Update copyright year of files"
+task :update_copyright do
+  initial_year = '2009'
+  current_year = DateTime.now.year
+  copyright_pattern = / \* Copyright (.*) Limber Framework/
+  
+  Dir["**/*.php"].each do |file|
+    content = File.read(file)
+    content.gsub! copyright_pattern, " * Copyright #{initial_year}-#{current_year} Limber Framework"
+    
+    File.open file, "wb" do |f|
+      f << content
+    end
+  end
+end
