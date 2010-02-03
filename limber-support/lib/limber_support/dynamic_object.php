@@ -131,7 +131,6 @@ abstract class DynamicObject
 				});
 			} else {
 				static::define_method($method_name, function () use ($classname, $method_name) {
-					$obj = new $classname();
 					$args = func_get_args();
 					
 					return call_user_func_array(array($classname, $method_name), $args);
