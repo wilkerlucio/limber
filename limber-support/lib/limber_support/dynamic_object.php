@@ -287,6 +287,7 @@ abstract class DynamicObject
 		
 		array_unshift($arguments, $this);
 		
+		//try instance method
 		if (isset($this->_instance_methods[$method])) {
 			return call_user_func_array($this->_instance_methods[$method], $arguments);
 		}
