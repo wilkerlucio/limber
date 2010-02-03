@@ -27,9 +27,9 @@ class A
 		$this->n = $n;
 	}
 	
-	public function multiply($x = 2)
+	public function multiply($x = 2, $y = 1)
 	{
-		return $this->n * $x;
+		return $this->n * $x * $y;
 	}
 	
 	public function __invoke()
@@ -193,10 +193,28 @@ describe("Array Support", function($spec) {
 			$spec($invoked)->should->be(array(3, 6, 9));
 		});
 		
-		$spec->it("should invoke de objects itself if not method given", function($spec, $data) {
+		$spec->it("should invoke the objects itself if not method given", function($spec, $data) {
 			$invoked = array_invoke($data->items);
 			
 			$spec($invoked)->should->be(array(5, 10, 15));
+		});
+	});
+	
+	$spec->context("array_invoke_array", function($spec) {
+		$spec->before_each(function($data) {
+			$data->items = array(new A(1), new A(2), new A(3));
+		});
+		
+		$spec->it("should get values return by invoked method", function($spec, $data) {
+			$invoked = array_invoke_array($data->items, "multiply");
+			
+			$spec($invoked)->should->be(array(2, 4, 6));
+		});
+		
+		$spec->it("should accept arguments into invoked method", function($spec, $data) {
+			$invoked = array_invoke_array($data->items, "multiply", array(3, 2));
+			
+			$spec($invoked)->should->be(array(6, 12, 18));
 		});
 	});
 	

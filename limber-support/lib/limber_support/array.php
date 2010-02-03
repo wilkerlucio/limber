@@ -361,6 +361,74 @@ function array_invoke($array, $method = null)
 }
 
 /**
+ * Similar to array_invoke, but the third argument is an array of arguments to
+ * be passed to the invoked method
+ *
+ * <code>
+ * class A
+ * {
+ * 	public $n;
+ * 	
+ * 	public function __construct($n)
+ * 	{
+ * 		$this->n = $n;
+ * 	}
+ * 	
+ * 	public function multiply($x = 2, $y = 1)
+ * 	{
+ * 		return $this->n * $x;
+ * 	}
+ * 	
+ * 	public function __invoke()
+ * 	{
+ * 		return $this->multiply(10);
+ * 	}
+ * }
+ *
+ * $data = array(new A(1), new A(2), new A(3));
+ * 
+ * print_r(array_invoke($data, "multiply"));
+ * print_r(array_invoke($data, "multiply", array(5, 2)));
+ * print_r(array_invoke($data));
+ * </code>
+ *
+ * This example will output:
+ *
+ * <code>
+ * Array
+ * (
+ *     [0] => 2
+ *     [1] => 4
+ *     [2] => 6
+ * )
+ * Array
+ * (
+ *     [0] => 10
+ *     [1] => 20
+ *     [2] => 30
+ * )
+ * Array
+ * (
+ *     [0] => 10
+ *     [1] => 20
+ *     [2] => 30
+ * )
+ * </code>
+ *
+ * @param array $array given array
+ * @param string $method the method name to be executed, if you don't give the
+ * method (or pass as null) the object itself will be invoked
+ * @param array $args the arguments to be passed
+ * @return array the array with the return value of method called
+ */
+function array_invoke_array($array, $method = null, $args = array())
+{
+	return array_map(function($item) use ($method, $args) {
+		return call_user_func_array($method ? array($item, $method) : $item, $args);
+	}, $array);
+}
+
+/**
  * It's like the pluck method, but fetchs by array index
  *
  * @see array_pluck
