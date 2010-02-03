@@ -24,6 +24,38 @@
  */
 
 /**
+ * Add elements of many arrays into a first one
+ *
+ * This method will get the first array as the base and then will get
+ * any other arrays in argument list and append the elements of those arrays
+ * into the first one
+ *
+ * <code>
+ * $a = array(1, 2);
+ * $b = array(3, array(4));
+ * $c = array(5);
+
+ * array_add($a, $b, $c); // => array(1, 2, 3, array(4), 5)
+ * </code>
+ *
+ * @param array $base
+ * @param array $arrays,...
+ * @return array
+ */
+function array_add($base)
+{
+	$arrays = array_slice(func_get_args(), 1);
+	
+	foreach ($arrays as $array) {
+		foreach ($array as $value) {
+			$base[] = $value;
+		}
+	}
+	
+	return $base;
+}
+
+/**
  * Check if all items of array are trues on an iterator
  *
  * This method apply one iterator over all elements of array,

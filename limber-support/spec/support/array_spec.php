@@ -41,6 +41,12 @@ class A
 class B {}
 
 describe("Array Support", function($spec) {
+	$spec->context("array_add", function($spec) {
+		$spec->it("should add elements of arrays into first one", function($spec, $data) {
+			$spec(array_add(array(1, 2), array(3, array(4)), array(5)))->should->be(array(1, 2, 3, array(4), 5));
+		});
+	});
+	
 	$spec->context("array_all", function($spec) {
 		$spec->it("should return true if all params return true on iterator", function($spec, $data) {
 			$spec(array_all(array(2, 4, 6), function($n) { return ($n % 2) == 0; }))->should->be(true);
