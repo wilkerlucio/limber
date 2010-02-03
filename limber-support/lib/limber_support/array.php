@@ -355,9 +355,7 @@ function array_invoke($array, $method = null)
 {
 	$args = array_slice(func_get_args(), 2);
 	
-	return array_map(function($item) use ($method, $args) {
-		return call_user_func_array($method ? array($item, $method) : $item, $args);
-	}, $array);
+	return array_invoke_array($array, $method, $args);
 }
 
 /**
