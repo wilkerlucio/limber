@@ -42,8 +42,8 @@ class Route extends \LimberSupport\DynamicObject
 		$this->assigned = false;
 		$this->_params = array();
 		
-		$this->options["defaults"]["controller"] = $options["controller"];
-		$this->options["defaults"]["action"] = $options["action"];
+		$this->options["defaults"]["controller"] = $this->options["controller"];
+		$this->options["defaults"]["action"] = $this->options["action"];
 		
 		$this->_params = array_merge($this->_params, $this->options["defaults"]);
 		
